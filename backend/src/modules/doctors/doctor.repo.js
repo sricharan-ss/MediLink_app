@@ -81,7 +81,11 @@ export async function getDoctors(filters = {}) {
     }
 
     if (filters.hospitalId) {
-        where.hospitalId = filters.hospitalId;
+        where.hospitals = {
+            some: {
+                hospitalId: filters.hospitalId
+            }
+        };
     }
 
     if (filters.encounterId) {

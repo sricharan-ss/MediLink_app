@@ -8,13 +8,15 @@
     "build": "prisma generate",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "test": "pwsh -ExecutionPolicy Bypass -File ./test/test.ps1",
-    "test:detailed": "pwsh -ExecutionPolicy Bypass -File ./test/test.ps1 -Verbose",
+    "test": "powershell -ExecutionPolicy Bypass -File ./test/test.ps1",
+    "test:detailed": "powershell -ExecutionPolicy Bypass -File ./test/test.ps1 -Verbose",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev --name",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
-    "seed:medicines": "node scripts/seedMedicinesFromCsv.js"
+    "seed:medicines": "node scripts/seedMedicinesFromCsv.js",
+    "seed:demo": "node scripts/seedDemoData.js",
+    "test:phase4b": "node scripts/testPhase4b.js"
   },
   "keywords": [],
   "author": "",

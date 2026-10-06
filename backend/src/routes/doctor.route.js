@@ -24,6 +24,7 @@ router.delete('/doctor-hospital/:id', authMiddleware, roleMiddleware(['HOSPITAL_
 // Doctor routes
 router.post('/', authMiddleware, roleMiddleware(['DOCTOR', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']), doctorController.create);
 router.get('/', authMiddleware, roleMiddleware(['PATIENT', 'RECEPTIONIST', 'DOCTOR', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']), doctorController.getAll);
+router.get('/:id/slots', authMiddleware, roleMiddleware(['PATIENT', 'RECEPTIONIST', 'DOCTOR', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']), doctorController.getSlots);
 router.get('/:id', authMiddleware, roleMiddleware(['PATIENT', 'RECEPTIONIST', 'DOCTOR', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']), doctorController.getById);
 router.put('/:id', authMiddleware, roleMiddleware(['DOCTOR', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']), doctorController.update);
 router.delete('/:id', authMiddleware, roleMiddleware(['HOSPITAL_ADMIN', 'SUPER_ADMIN']), doctorController.remove);

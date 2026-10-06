@@ -17,9 +17,32 @@ export const createHospitalService = async ({
 };
 
 export const getHospitalsService = async (filters = {}) => {
-  return await getHospitals(filters);
+  const hospitals = await getHospitals(filters);
+  return hospitals.map((h) => {
+    const doctors = h.doctorHospitals ? h.doctorHospitals.map((dh) => ({
+      ...dh.doctor,
+      hospitalId: h.hospitalId,
+      hospitalName: h.name,
+    })) : [];
+    return {
+      ...h,
+      doctors,
+      doctorCount: doctors.length,
+    };
+  });
 };
 
 export const getHospitalByIdService = async (hospitalId) => {
-  return await getHospitalById(hospitalId);
+  const hospital = await getHospitalById(hospitalId);
+  if (!hospital) return null;
+  const doctors = hospital.doctorHospitals ? hospital.doctorHospitals.map((dh) => ({
+    ...dh.doctor,
+    hospitalId: hospital.hospitalId,
+    hospitalName: hospital.name,
+  })) : [];
+  return {
+    ...hospital,
+    doctors,
+    doctorCount: doctors.length,
+  };
 };

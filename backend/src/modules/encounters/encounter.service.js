@@ -13,6 +13,28 @@ import { AppError } from '../../common/errors.js';
 export async function createEncounter(data) {
     let doctorName = 'Doctor';
     let doctorSpecialization = undefined;
+
+    // Double-booking check: Prevent booking if doctor already has an active encounter or booked schedule at the same time
+    const existingConflict = await doctorScheduleRepo.getDoctorSchedules({
+        doctorId: data.doctorId,
+        scheduledTime: data.scheduledTime,
+    });
+    if (existingConflict && existingConflict.length > 0 && existingConflict.some(s => s.isBooked)) {
+        throw new AppError('The selected time slot is already booked for this doctor', 409);
+    }
+
+    // Also check encounters table directly for active (non-cancelled) encounter at this time
+    const existingActiveEncounters = await encounterRepository.getEncounters({
+        doctorId: data.doctorId,
+    });
+    const scheduledIso = new Date(data.scheduledTime).toISOString();
+    const hasActiveConflict = existingActiveEncounters && existingActiveEncounters.some(
+        e => e.status !== 'CANCELLED' && new Date(e.scheduledTime).toISOString() === scheduledIso
+    );
+    if (hasActiveConflict) {
+        throw new AppError('The selected time slot is already booked for this doctor', 409);
+    }
+
     // If this is a follow-up encounter, mark the previous encounter as revisited
     if (data.previousEncounterId) {
         const previousEncounter = await encounterRepository.getEncounterById(data.previousEncounterId);
@@ -186,24 +208,75 @@ export async function updateEncounter(encounterId, data) {
     if (!encounter) {
         throw new AppError('Encounter not found', 404);
     }
-    
+
+    const doctorId = data.doctorId || encounter.doctorId;
+    const isRescheduling = data.scheduledTime && new Date(data.scheduledTime).toISOString() !== new Date(encounter.scheduledTime).toISOString();
+
+    // If rescheduling, check that the new time slot isn't already occupied by another active encounter
+    if (isRescheduling) {
+        const newScheduledDate = new Date(data.scheduledTime);
+        const newScheduledIso = newScheduledDate.toISOString();
+        const existingActiveEncounters = await encounterRepository.getEncounters({ doctorId });
+        const hasConflict = existingActiveEncounters && existingActiveEncounters.some(
+            e => e.encounterId !== encounterId && e.status !== 'CANCELLED' && new Date(e.scheduledTime).toISOString() === newScheduledIso
+        );
+        if (hasConflict) {
+            throw new AppError('The new time slot is already booked for this doctor', 409);
+        }
+
+        const existingScheduleConflicts = await doctorScheduleRepo.getDoctorSchedules({
+            doctorId: doctorId,
+            scheduledTime: newScheduledDate,
+        });
+        if (existingScheduleConflicts && existingScheduleConflicts.some(s => s.isBooked && s.encounterId !== encounterId)) {
+            throw new AppError('The new time slot is already booked for this doctor', 409);
+        }
+    }
+
     // Update the encounter
     const updatedEncounter = await encounterRepository.updateEncounter(encounterId, data);
     
     // Update the linked doctor schedule
     try {
         const schedules = await doctorScheduleRepo.getDoctorSchedules({ encounterId });
+        const isCancelled = data.status === 'CANCELLED';
         if (schedules && schedules.length > 0) {
             const schedule = schedules[0];
-            const scheduleUpdateData = {
-                doctorId: data.doctorId || schedule.doctorId,
-                patientId: data.patientId || schedule.patientId,
-                hospitalId: data.hospitalId || schedule.hospitalId,
-                scheduledTime: data.scheduledTime || schedule.scheduledTime,
-                slotDuration: data.duration || schedule.slotDuration,
-                isBooked: true
-            };
-            await doctorScheduleRepo.updateDoctorSchedule(schedule.scheduleId, scheduleUpdateData);
+            if (isCancelled) {
+                await doctorScheduleRepo.updateDoctorSchedule(schedule.scheduleId, {
+                    isBooked: false,
+                });
+            } else if (isRescheduling) {
+                const newScheduledDate = new Date(data.scheduledTime);
+                const existingAtNewTime = await doctorScheduleRepo.getDoctorSchedules({
+                    doctorId: doctorId,
+                    scheduledTime: newScheduledDate,
+                });
+                if (existingAtNewTime && existingAtNewTime.length > 0 && existingAtNewTime[0].scheduleId !== schedule.scheduleId) {
+                    await doctorScheduleRepo.updateDoctorSchedule(existingAtNewTime[0].scheduleId, {
+                        patientId: data.patientId || schedule.patientId,
+                        hospitalId: data.hospitalId || schedule.hospitalId,
+                        encounterId: encounterId,
+                        slotDuration: data.duration || schedule.slotDuration,
+                        isBooked: true,
+                    });
+                    await doctorScheduleRepo.deleteDoctorSchedule(schedule.scheduleId);
+                } else {
+                    await doctorScheduleRepo.updateDoctorSchedule(schedule.scheduleId, {
+                        doctorId: doctorId,
+                        scheduledTime: newScheduledDate,
+                        slotDuration: data.duration || schedule.slotDuration,
+                        isBooked: true,
+                    });
+                }
+            } else {
+                await doctorScheduleRepo.updateDoctorSchedule(schedule.scheduleId, {
+                    doctorId: doctorId,
+                    patientId: data.patientId || schedule.patientId,
+                    hospitalId: data.hospitalId || schedule.hospitalId,
+                    slotDuration: data.duration || schedule.slotDuration,
+                });
+            }
         }
     } catch (error) {
         throw new AppError('Failed to update doctor schedule: ' + error.message, 400);
@@ -373,9 +446,6 @@ export async function getEncounterById(encounterId) {
 
 export async function getEncounters(filters = {}) {
     const encounters = await encounterRepository.getEncounters(filters);
-    if (!encounters || encounters.length === 0) {
-        throw new AppError('No encounters found for the given filters', 404);
-    }
-    return encounters;
+    return encounters || [];
 }
 

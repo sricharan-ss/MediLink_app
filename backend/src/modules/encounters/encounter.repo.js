@@ -64,8 +64,42 @@ export async function deleteEncounter(encounterId) {
 
 export async function getEncounterById(encounterId) {
     return await prisma.encounter.findUnique({
-        where: { encounterId: encounterId }
-    })
+        where: { encounterId: encounterId },
+        include: {
+            doctor: {
+                include: {
+                    user: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            phoneNumber: true,
+                            profile: true,
+                        },
+                    },
+                },
+            },
+            hospital: {
+                select: {
+                    hospitalId: true,
+                    name: true,
+                    city: true,
+                    address: true,
+                    rating: true,
+                },
+            },
+            patient: {
+                include: {
+                    user: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            phoneNumber: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
 }
 
 export async function getEncounters(filters = {}) {
@@ -95,7 +129,46 @@ export async function getEncounters(filters = {}) {
         where.tokenNo = filters.tokenNo;
     }
 
-    return await prisma.encounter.findMany({ where });
+    return await prisma.encounter.findMany({
+        where,
+        include: {
+            doctor: {
+                include: {
+                    user: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            phoneNumber: true,
+                            profile: true,
+                        },
+                    },
+                },
+            },
+            hospital: {
+                select: {
+                    hospitalId: true,
+                    name: true,
+                    city: true,
+                    address: true,
+                    rating: true,
+                },
+            },
+            patient: {
+                include: {
+                    user: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            phoneNumber: true,
+                        },
+                    },
+                },
+            },
+        },
+        orderBy: {
+            scheduledTime: 'desc',
+        },
+    });
 }
 
 export async function createEncounterWithAtomicToken(data) {

@@ -1,19 +1,41 @@
 import { prisma } from '../../config/db.js';
 
 export async function createDoctorSchedule(data) {
+    const scheduledDate = new Date(data.scheduledTime);
+    const existing = await prisma.doctorSchedule.findFirst({
+        where: {
+            doctorId: data.doctorId,
+            scheduledTime: scheduledDate,
+        }
+    });
+
+    if (existing) {
+        return await prisma.doctorSchedule.update({
+            where: { scheduleId: existing.scheduleId },
+            data: {
+                patientId: data.patientId,
+                hospitalId: data.hospitalId,
+                encounterId: data.encounterId,
+                slotDuration: data.slotDuration,
+                isBooked: data.isBooked || false,
+                updatedAt: new Date()
+            }
+        });
+    }
+
     return await prisma.doctorSchedule.create({
         data: {
             doctorId: data.doctorId,
             patientId: data.patientId,
             hospitalId: data.hospitalId,
             encounterId: data.encounterId,
-            scheduledTime: data.scheduledTime,
+            scheduledTime: scheduledDate,
             slotDuration: data.slotDuration,
             isBooked: data.isBooked || false,
             createdAt: new Date(),
             updatedAt: new Date()
         }
-    })
+    });
 }
 
 export async function updateDoctorSchedule(scheduleId, data) {
@@ -63,7 +85,7 @@ export async function getDoctorSchedules(filters = {}) {
     }
 
     if (filters.scheduledTime) {
-        where.scheduledTime = filters.scheduledTime;
+        where.scheduledTime = new Date(filters.scheduledTime);
     }
     
     return await prisma.doctorSchedule.findMany({ where });

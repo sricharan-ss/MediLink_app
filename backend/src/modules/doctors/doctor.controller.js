@@ -57,3 +57,14 @@ export const getAll = async (req, res, next) => {
         next(err);
     }
 };
+
+export const getSlots = async (req, res, next) => {
+    try {
+        const doctorId = req.params.id;
+        const { date, hospitalId } = req.query;
+        const slots = await doctorService.getDoctorAvailableSlots(doctorId, { date, hospitalId });
+        res.status(200).json(slots);
+    } catch (err) {
+        next(err);
+    }
+};
