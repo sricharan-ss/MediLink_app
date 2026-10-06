@@ -832,17 +832,6 @@ class PatientApiService {
     return decoded;
   }
 
-  static Future<Map<String, dynamic>> _patchMap(
-    String path,
-    Map<String, dynamic> body,
-  ) async {
-    final decoded = await _request(
-      () => http.patch(_uri(path), headers: _headers(), body: jsonEncode(body)),
-    );
-    final data = decoded['data'];
-    if (data is Map<String, dynamic>) return data;
-    return decoded;
-  }
 
   static Future<Map<String, dynamic>> _deleteMap(String path) async {
     final decoded = await _request(

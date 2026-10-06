@@ -582,7 +582,7 @@ class _HomeHeader extends StatelessWidget {
                         Text(
                           'Good evening',
                           style: TextStyle(
-                            color: AppColors.cream.withOpacity(0.7),
+                            color: AppColors.cream.withValues(alpha: 0.7),
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                           ),
@@ -630,7 +630,7 @@ class _HomeHeader extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, '/search-results'),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.95),
+                    color: Colors.white.withValues(alpha: 0.95),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const IgnorePointer(
@@ -752,7 +752,7 @@ class _AppointmentCard extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.2),
+                  color: statusColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: statusColor, width: 1),
                 ),
@@ -771,7 +771,7 @@ class _AppointmentCard extends StatelessWidget {
           Text(
             '$specialty · $hospital',
             style: TextStyle(
-              color: AppColors.cream.withOpacity(0.7),
+              color: AppColors.cream.withValues(alpha: 0.7),
               fontSize: 13,
               fontWeight: FontWeight.w400,
             ),
@@ -780,12 +780,12 @@ class _AppointmentCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.calendar_today_outlined,
-                  color: AppColors.cream.withOpacity(0.8), size: 14),
+                  color: AppColors.cream.withValues(alpha: 0.8), size: 14),
               const SizedBox(width: 6),
               Text(
                 date,
                 style: TextStyle(
-                    color: AppColors.cream.withOpacity(0.9),
+                    color: AppColors.cream.withValues(alpha: 0.9),
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
               ),
@@ -797,12 +797,12 @@ class _AppointmentCard extends StatelessWidget {
                       color: AppColors.accent, shape: BoxShape.circle)),
               const SizedBox(width: 12),
               Icon(Icons.access_time_outlined,
-                  color: AppColors.cream.withOpacity(0.8), size: 14),
+                  color: AppColors.cream.withValues(alpha: 0.8), size: 14),
               const SizedBox(width: 6),
               Text(
                 time,
                 style: TextStyle(
-                    color: AppColors.cream.withOpacity(0.9),
+                    color: AppColors.cream.withValues(alpha: 0.9),
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
               ),
@@ -1009,7 +1009,7 @@ class _HospitalCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.1),
+                  color: AppColors.accent.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Text(
@@ -1251,7 +1251,7 @@ class _MedicationCard extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: AppColors.accent.withOpacity(0.12),
+                            color: AppColors.accent.withValues(alpha: 0.12),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(Icons.medication_outlined,
@@ -1456,7 +1456,7 @@ class _BottomNav extends StatelessWidget {
             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 12,
               offset: const Offset(0, -4))
         ],
@@ -1468,7 +1468,7 @@ class _BottomNav extends StatelessWidget {
           currentIndex: selectedIndex,
           onTap: onTap,
           selectedItemColor: AppColors.brownDeep,
-          unselectedItemColor: AppColors.brownMid.withOpacity(0.5),
+          unselectedItemColor: AppColors.brownMid.withValues(alpha: 0.5),
           backgroundColor: Colors.transparent,
           elevation: 0,
           selectedFontSize: 11,

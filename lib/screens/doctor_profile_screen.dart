@@ -274,7 +274,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                                 decoration: BoxDecoration(
                                                   color: const Color(
                                                     0xFFD4822A,
-                                                  ).withOpacity(0.1),
+                                                  ).withValues(alpha: 0.1),
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                 ),
@@ -309,7 +309,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                                     ),
                                                 decoration: BoxDecoration(
                                                   color: Colors.purple
-                                                      .withOpacity(0.1),
+                                                      .withValues(alpha: 0.1),
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                 ),

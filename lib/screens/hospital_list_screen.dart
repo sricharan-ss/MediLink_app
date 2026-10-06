@@ -336,10 +336,10 @@ class _HospitalListScreenState extends State<HospitalListScreen> {
             if (widget.nearbyOnly)
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: Color(0xFFE8F5E9),
-                child: Row(
-                  children: const [
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                color: const Color(0xFFE8F5E9),
+                child: const Row(
+                  children: [
                     Icon(Icons.location_on, color: Color(0xFF2E7D32), size: 16),
                     SizedBox(width: 8),
                     Expanded(

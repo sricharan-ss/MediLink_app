@@ -258,7 +258,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             color: _isLoading
-                                ? AppColors.textSecondary.withOpacity(0.5)
+                                ? AppColors.textSecondary.withValues(alpha: 0.5)
                                 : AppColors.primary,
                           ),
                         ),
@@ -273,8 +273,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       onPressed: _isValid && !_isLoading ? _verifyOTP : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            _isValid ? AppColors.primary : AppColors.primary.withOpacity(0.4),
-                        disabledBackgroundColor: AppColors.primary.withOpacity(0.4),
+                            _isValid ? AppColors.primary : AppColors.primary.withValues(alpha: 0.4),
+                        disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),

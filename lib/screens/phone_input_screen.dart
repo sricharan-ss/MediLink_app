@@ -225,8 +225,8 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _isValid
                             ? AppColors.primary
-                            : AppColors.primary.withOpacity(0.4),
-                        disabledBackgroundColor: AppColors.primary.withOpacity(0.4),
+                            : AppColors.primary.withValues(alpha: 0.4),
+                        disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),

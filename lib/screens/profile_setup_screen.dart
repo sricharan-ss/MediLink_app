@@ -462,7 +462,7 @@ class _ConditionChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.paleGreen.withOpacity(0.5),
+          color: isSelected ? AppColors.primary : AppColors.paleGreen.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: isSelected ? AppColors.primary : AppColors.paleGreen),
         ),

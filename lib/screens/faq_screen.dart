@@ -94,7 +94,7 @@ class _FAQScreenState extends State<FAQScreen> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.04),
+                      color: AppColors.primary.withValues(alpha: 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),

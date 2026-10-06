@@ -169,7 +169,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.arrow_back,
@@ -546,7 +546,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               'We could not find anything matching "${_controller.text}". Try a specialty, doctor name, or hospital city.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: AppColors.brownMid.withOpacity(0.7), fontSize: 14),
+                  color: AppColors.brownMid.withValues(alpha: 0.7), fontSize: 14),
             ),
           ],
         ),

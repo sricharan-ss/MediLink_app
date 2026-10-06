@@ -265,7 +265,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                         color: isCompleted
                                             ? stepColor
                                             : (isActive
-                                                ? stepColor.withOpacity(0.2)
+                                                ? stepColor.withValues(alpha: 0.2)
                                                 : AppColors.surfaceSage),
                                         border: isActive
                                             ? Border.all(

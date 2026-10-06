@@ -486,11 +486,11 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                     decoration: InputDecoration(
                       hintText: 'Search medicines...',
                       hintStyle: TextStyle(
-                          color: AppColors.textSecondary.withOpacity(0.6)),
+                          color: AppColors.textSecondary.withValues(alpha: 0.6)),
                       prefixIcon: const Icon(Icons.search,
                           color: AppColors.textSecondary),
                       filled: true,
-                      fillColor: AppColors.paleGreen.withOpacity(0.3),
+                      fillColor: AppColors.paleGreen.withValues(alpha: 0.3),
                       contentPadding: const EdgeInsets.symmetric(vertical: 14),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -527,7 +527,7 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.paleGreen.withOpacity(0.2),
+                        color: AppColors.paleGreen.withValues(alpha: 0.2),
                         border: Border.all(color: AppColors.surfaceSage),
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -541,7 +541,7 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.paleGreen.withOpacity(0.2),
+                        color: AppColors.paleGreen.withValues(alpha: 0.2),
                         border: Border.all(color: AppColors.surfaceSage),
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -588,7 +588,7 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: AppColors.error.withOpacity(0.1),
+                                    color: AppColors.error.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: const Text(
@@ -720,9 +720,9 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                       decoration: InputDecoration(
                         hintText: 'House / street / city / pincode',
                         hintStyle: TextStyle(
-                            color: AppColors.textSecondary.withOpacity(0.6)),
+                            color: AppColors.textSecondary.withValues(alpha: 0.6)),
                         filled: true,
-                        fillColor: AppColors.paleGreen.withOpacity(0.2),
+                        fillColor: AppColors.paleGreen.withValues(alpha: 0.2),
                         contentPadding: const EdgeInsets.all(14),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),

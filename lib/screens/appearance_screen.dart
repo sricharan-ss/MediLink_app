@@ -50,7 +50,7 @@ class AppearanceScreen extends StatelessWidget {
                   border: Border.all(color: AppColors.secondary, width: 1.5),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.06),
+                      color: AppColors.primary.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
                     ),
@@ -101,9 +101,9 @@ class AppearanceScreen extends StatelessWidget {
                       width: 68,
                       height: 92,
                       decoration: BoxDecoration(
-                        color: AppColors.paleGreen.withOpacity(0.5),
+                        color: AppColors.paleGreen.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.secondary.withOpacity(0.4)),
+                        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.4)),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),

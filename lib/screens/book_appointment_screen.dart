@@ -465,7 +465,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                           color: isPrevDisabled
                                               ? const Color(
                                                   0xFF3B1F0A,
-                                                ).withOpacity(0.3)
+                                                ).withValues(alpha: 0.3)
                                               : const Color(0xFF3B1F0A),
                                           size: 20,
                                         ),
@@ -519,7 +519,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                           color: isWeekendStr
                                               ? const Color(
                                                   0xFFD4822A,
-                                                ).withOpacity(0.7)
+                                                ).withValues(alpha: 0.7)
                                               : const Color(0xFFA0622A),
                                           fontSize: 11,
                                           fontWeight: FontWeight.w500,
@@ -764,7 +764,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                             ? const Color(0xFF6B3A1F)
                                             : const Color(
                                                 0xFFA0622A,
-                                              ).withOpacity(0.5),
+                                              ).withValues(alpha: 0.5),
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -809,7 +809,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                             hintText:
                                 'Describe your symptoms or reason for visit...',
                             hintStyle: TextStyle(
-                              color: const Color(0xFFA0622A).withOpacity(0.5),
+                              color: const Color(0xFFA0622A).withValues(alpha: 0.5),
                               fontSize: 14,
                             ),
                             filled: true,
@@ -839,8 +839,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  const Color(0xFF3B1F0A).withOpacity(0.05),
-                                  const Color(0xFFD4822A).withOpacity(0.05),
+                                  const Color(0xFF3B1F0A).withValues(alpha: 0.05),
+                                  const Color(0xFFD4822A).withValues(alpha: 0.05),
                                 ],
                               ),
                               border: Border.all(
@@ -939,7 +939,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                   backgroundColor: const Color(0xFF3B1F0A),
                   disabledBackgroundColor: const Color(
                     0xFF3B1F0A,
-                  ).withOpacity(0.4),
+                  ).withValues(alpha: 0.4),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),

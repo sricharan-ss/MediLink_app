@@ -228,6 +228,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
     );
     bool isSaving = false;
 
+    if (!mounted) return;
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -247,6 +248,10 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 );
                 return;
               }
+
+              // Capture before async gap to satisfy use_build_context_synchronously
+              final navigator = Navigator.of(context);
+              final messenger = ScaffoldMessenger.of(context);
 
               setSheetState(() => isSaving = true);
               final timeText = _timeToApi(selectedTime);
@@ -269,11 +274,11 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 }
                 if (!mounted) return;
                 closeSheet = true;
-                Navigator.pop(context);
+                navigator.pop();
                 await _loadMedicationDashboard();
               } catch (error) {
                 if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(content: Text(PatientApiService.friendlyError(error))),
                 );
               } finally {
@@ -282,6 +287,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 }
               }
             }
+
 
             return Padding(
               padding: EdgeInsets.only(

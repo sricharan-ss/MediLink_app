@@ -235,7 +235,7 @@ class _Cover extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     shape: BoxShape.circle),
                 child: const Center(
                     child:
@@ -245,7 +245,7 @@ class _Cover extends StatelessWidget {
               Text(
                 '${hospital.city} - ${hospital.doctorCount} doctors',
                 style: TextStyle(
-                    color: const Color(0xFFFBF6EC).withOpacity(0.85),
+                    color: const Color(0xFFFBF6EC).withValues(alpha: 0.85),
                     fontSize: 12),
               ),
             ],
