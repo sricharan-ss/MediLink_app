@@ -1,0 +1,71 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+*.backup
+
+# Node / Backend
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Flutter / Dart / Pub
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+build/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# Android Build Artifacts
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/.gradle-home/
+.gradle/
+**/android/.gradle/
+local.properties
+
+# iOS / macOS Artifacts
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/macos/Pods/
+**/macos/.symlinks/
+**/macos/Flutter/ephemeral
+
+# Coverage & Testing
+coverage/
+.nyc_output/
+
+# Logs & Temporary Files
+*.log
+*.class
+*.pyc
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.buildlog/
+.history
+.backend_server.tmp
+full_run_log.txt
+
+# IDE / Editor Files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Symbols & Maps
+app.*.symbols
+app.*.map.json
+

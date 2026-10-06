@@ -1,0 +1,50 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "build": "prisma generate",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "pwsh -ExecutionPolicy Bypass -File ./test/test.ps1",
+    "test:detailed": "pwsh -ExecutionPolicy Bypass -File ./test/test.ps1 -Verbose",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev --name",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "seed:medicines": "node scripts/seedMedicinesFromCsv.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@paralleldrive/cuid2": "^3.3.0",
+    "@prisma/client": "^5.14.0",
+    "axios": "^1.13.6",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.9.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.3.1",
+    "file-type": "^21.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.0",
+    "nodemailer": "^8.0.1",
+    "otp-generator": "^4.0.1",
+    "prisma": "^5.14.0",
+    "razorpay": "^2.9.6",
+    "twilio": "^5.12.2",
+    "xss": "^1.0.14",
+    "zod": "^4.3.6",
+    "zod-validation-error": "^5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

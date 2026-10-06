@@ -1,0 +1,124 @@
+model:
+- add lab model
+- add lab schedule model
+- add appointment schedule model - visited/not visited/ missed attribute as well
+- summary model
+- notification model
+- analytics model
+- admitted patient model? - recovery status, predicted readmission, etc etc
+- feedback summary model for hospital - summary of dissatisfactions based on user id, flags in area wise, 
+- video instruction model - contains url, title and stuff
+- temp user for otp verification
+
+attribute:
+- hospital attribute - ranking/rating?
+- appointment schedule - isPresent? inTime, outTime(for analytics) 
+- prescription - nextVisit?
+- lab result - remarks, actions taken
+- encounter - revisited
+- patient - favouriteDoctorIDs serial/array
+
+routing:
+- user info/edit routing
+- analytics model routing
+- encounter routing
+- auth/rbac routing
+- scheduling routes - encounters/appointments stuff
+- medical records/lab records routes - prescriptions and all
+- feedback routings
+- notification route
+- lab routings
+- hospital management routings
+- inventory routings
+
+service:
+- reminder service - cron job scheduler maybe
+- pdf generation service
+- encryption/decryption service for file uploads/downloads
+- invoice generation service
+- notification service
+- sms service
+- file upload/download service
+
+notes:
+- if cross hospital data is shared - otp should be shared by the patient
+- no deletion in medical records/lab records
+- vault for personal storage of reports - patients in phones
+- time zone setting in db
+- there is a conflict b/w UserHospitalRole and role - this is used for connecting doctors roles and other roles to the hospital
+- need serial for medicine
+
+- medicine price add
+
+role based access:
+1. user:
+    - doctor list - view
+    - hospital list - view
+
+1. patient:
+    - prescription, lab record - view, download, upload
+    - medicine - view
+    - encounter - view, create, edit
+    - feedback - post answers
+    - bills, invoices, payments - view
+    - analytics - view
+
+2. doctor:
+    - medical/lab records - view + otp(if external)
+    - schedule appointments - view, update(time slots)
+    - patient list - view
+    - prescription diagnosis  - create, view, edit
+    - medicine - view
+
+3. Receptionist:
+    - patient list - view
+    - patient - create (while booking for appointments - patient phone number doesnt exist in db), update
+    - appointment encounter - view, create, edit, delete
+    - schedule - view, edit, delete
+    - notification sms service - create send 
+    - payments bills - create, edit
+    - lab tests/records - create, edit, view
+
+
+4. Lab Manager:
+    - lab reports/tests - view create edit
+    - patient list - view
+
+5. hospital admin:
+    - dcotor, receptionist, nurse, lab staff - create, edit, view, delete
+    - bills payments - view
+    - analytics - view
+    - schedule, encounters, appointments stuff - view, create, edit, delete
+    - all actions of doctors+lab managers+receptionists
+
+6. Super Admins:
+    - all task of hospital admin of all hospitals
+
+
+auth.route.js: 			        userAuth.controller.js
+user.route.js: 			        user.controller.js, nurse.controller.js, receptionist.controller.js
+hospital.route.js: 		        hospital.controller.js, bed.controller.js
+doctor.route.js: 		        doctor.controller.js, doctor_hospital.controller.js, doctor_schedule.controller.js
+patient.route.js: 		        patient.controller.js, admitted_patient.controller.js
+encounter.route.js: 		    encounter.controller.js
+prescription.route.js: 		    prescription.controller.js, prescription_medicine.controller.js, diagnosis.controller.js
+lab.route.js: 			        lab.controller.js, lab_manager.controller.js, lab_test.controller.js, lab_result.controller.js, lab_schedule.controller.js
+feedback.route.js: 		        feedback.controller.js, feedback_summary.controller.js
+notification.route.js: 		    notification.controller.js
+analytics.route.js: 		    analytics.controller.js
+medicine.route.js		        medicine.controller.js
+inventory.route.js: 		    inventory.controller.js, inventory_manager.controller.js
+payment.route.js:		        payment.controller.js, invoice.controller.js, invoice_item.controller.js
+summary.route.js: 		        summary.controller.js
+video_instruction.route.js: 	video_instruction.controller.js
+device.route.js: 		        device.controller.js
+vital.route.js: 		        vital.controller.js, vital_type.controller.js
+admin.route.js: 		        super_admin.controller.js, hospital_admin.controller.js
+
+
+temporary storage for offline support
+verification of medical
+
+
+jab invoice item add hoga under some invoice(if it exists then it will update the invoice, if it doesnt then it will create the invoice)
+if invoice item id is present then dont add
