@@ -44,11 +44,13 @@ export const getById = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
     try {
-        const { doctorId, encounterId, userId } = req.query;
+        const { doctorId, encounterId, userId, search, q } = req.query;
         const patients = await patientService.getPatients({
             doctorId,
             encounterId,
-            userId
+            userId,
+            search,
+            q,
         });
         res.status(200).json(patients);
     } catch (err) {

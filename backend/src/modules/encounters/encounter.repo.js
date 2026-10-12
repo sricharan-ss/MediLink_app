@@ -94,8 +94,24 @@ export async function getEncounterById(encounterId) {
                             firstName: true,
                             lastName: true,
                             phoneNumber: true,
+                            email: true,
                         },
                     },
+                },
+            },
+            prescriptions: {
+                include: {
+                    medicines: {
+                        include: {
+                            medicine: true,
+                        },
+                    },
+                },
+            },
+            diagnoses: true,
+            labResults: {
+                include: {
+                    labTest: true,
                 },
             },
         },
@@ -117,15 +133,27 @@ export async function getEncounters(filters = {}) {
         where.hospitalId = filters.hospitalId;
     }
 
-    if (filters.status) {
-        where.status = filters.status;
+    if (filters.statusCategory) {
+        if (filters.statusCategory === 'upcoming') {
+            where.status = { in: ['SCHEDULED', 'CONFIRMED', 'IN_PROGRESS'] };
+        } else if (filters.statusCategory === 'completed') {
+            where.status = 'COMPLETED';
+        } else if (filters.statusCategory === 'cancelled') {
+            where.status = { in: ['CANCELLED', 'NO_SHOW'] };
+        }
+    } else if (filters.status) {
+        if (Array.isArray(filters.status)) {
+            where.status = { in: filters.status };
+        } else {
+            where.status = filters.status;
+        }
     }
 
     if (filters.visitType) {
         where.visitType = filters.visitType;
     }
 
-    if(filters.tokenNo){
+    if (filters.tokenNo) {
         where.tokenNo = filters.tokenNo;
     }
 
@@ -160,8 +188,24 @@ export async function getEncounters(filters = {}) {
                             firstName: true,
                             lastName: true,
                             phoneNumber: true,
+                            email: true,
                         },
                     },
+                },
+            },
+            prescriptions: {
+                include: {
+                    medicines: {
+                        include: {
+                            medicine: true,
+                        },
+                    },
+                },
+            },
+            diagnoses: true,
+            labResults: {
+                include: {
+                    labTest: true,
                 },
             },
         },

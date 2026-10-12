@@ -60,7 +60,7 @@ export const getById = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
     try {
-        let { patientId, hospitalId, status, dueDate } = req.query;
+        let { patientId, hospitalId, status, dueDate, search, q } = req.query;
 
         // If requester is a PATIENT, strictly scope query to their patientId
         if (req.userRoles && req.userRoles.includes('PATIENT') && !req.userRoles.some(r => ['RECEPTIONIST', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(r))) {
@@ -79,7 +79,9 @@ export const getAll = async (req, res, next) => {
             patientId,
             hospitalId,
             status,
-            dueDate
+            dueDate,
+            search,
+            q,
         });
         res.status(200).json(invoices);
     } catch (err) {

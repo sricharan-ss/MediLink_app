@@ -68,7 +68,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
                 const Text(
                   'Enable Location',
                   style: TextStyle(
-                    color: AppColors.brownDeep,
+                    color: AppColors.textPrimary,
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                   ),
@@ -91,7 +91,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(ctx, true),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.brownDeep,
+                      backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14)),
                     ),
@@ -111,7 +111,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
                   child: const Text(
                     'Not Now',
                     style: TextStyle(
-                      color: AppColors.brownLight,
+                      color: AppColors.secondary,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -672,7 +672,7 @@ class _SectionHeader extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            color: AppColors.brownDeep,
+            color: AppColors.textPrimary,
             fontSize: 17,
             fontWeight: FontWeight.w700,
           ),
@@ -729,90 +729,90 @@ class _AppointmentCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.brownDeep,
+            color: AppColors.textPrimary,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  doctorName,
-                  style: const TextStyle(
-                    color: AppColors.warmWhite,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      doctorName,
+                      style: const TextStyle(
+                        color: AppColors.warmWhite,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: statusColor.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: statusColor, width: 1),
+                    ),
+                    child: Text(
+                      status,
+                      style: TextStyle(
+                        color: statusColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '$specialty · $hospital',
+                style: TextStyle(
+                  color: AppColors.cream.withValues(alpha: 0.7),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: statusColor, width: 1),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(Icons.calendar_today_outlined,
+                      color: AppColors.cream.withValues(alpha: 0.8), size: 14),
+                  const SizedBox(width: 6),
+                  Text(
+                    date,
+                    style: TextStyle(
+                        color: AppColors.cream.withValues(alpha: 0.9),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
                   ),
-                ),
+                  const SizedBox(width: 12),
+                  Container(
+                      width: 4,
+                      height: 4,
+                      decoration: const BoxDecoration(
+                          color: AppColors.accent, shape: BoxShape.circle)),
+                  const SizedBox(width: 12),
+                  Icon(Icons.access_time_outlined,
+                      color: AppColors.cream.withValues(alpha: 0.8), size: 14),
+                  const SizedBox(width: 6),
+                  Text(
+                    time,
+                    style: TextStyle(
+                        color: AppColors.cream.withValues(alpha: 0.9),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            '$specialty · $hospital',
-            style: TextStyle(
-              color: AppColors.cream.withValues(alpha: 0.7),
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Icon(Icons.calendar_today_outlined,
-                  color: AppColors.cream.withValues(alpha: 0.8), size: 14),
-              const SizedBox(width: 6),
-              Text(
-                date,
-                style: TextStyle(
-                    color: AppColors.cream.withValues(alpha: 0.9),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(width: 12),
-              Container(
-                  width: 4,
-                  height: 4,
-                  decoration: const BoxDecoration(
-                      color: AppColors.accent, shape: BoxShape.circle)),
-              const SizedBox(width: 12),
-              Icon(Icons.access_time_outlined,
-                  color: AppColors.cream.withValues(alpha: 0.8), size: 14),
-              const SizedBox(width: 6),
-              Text(
-                time,
-                style: TextStyle(
-                    color: AppColors.cream.withValues(alpha: 0.9),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
-    ),
-  ),
-);
+    );
   }
 }
 
@@ -838,7 +838,7 @@ class _HospitalGrid extends StatelessWidget {
         child: const Text(
           'No hospitals available right now.',
           style: TextStyle(
-            color: AppColors.brownMid,
+            color: AppColors.textSecondary,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),
@@ -898,13 +898,14 @@ class _NoAppointmentCard extends StatelessWidget {
       ),
       child: const Row(
         children: [
-          Icon(Icons.event_busy_outlined, color: AppColors.brownMid, size: 20),
+          Icon(Icons.event_busy_outlined,
+              color: AppColors.textSecondary, size: 20),
           SizedBox(width: 10),
           Expanded(
             child: Text(
               'No appointment yet. Book one to see it here.',
               style: TextStyle(
-                color: AppColors.brownMid,
+                color: AppColors.textSecondary,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -938,7 +939,7 @@ class _HomeInlineError extends StatelessWidget {
           Text(
             message,
             style: const TextStyle(
-              color: AppColors.brownMid,
+              color: AppColors.textSecondary,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -997,7 +998,7 @@ class _HospitalCard extends StatelessWidget {
                 child: Text(
                   name,
                   style: const TextStyle(
-                    color: AppColors.brownDeep,
+                    color: AppColors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -1027,13 +1028,13 @@ class _HospitalCard extends StatelessWidget {
           Row(
             children: [
               const Icon(Icons.location_on_outlined,
-                  color: AppColors.brownMid, size: 12),
+                  color: AppColors.textSecondary, size: 12),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
                   '$location • $distance',
-                  style:
-                      const TextStyle(color: AppColors.brownMid, fontSize: 11),
+                  style: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 11),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -1047,7 +1048,7 @@ class _HospitalCard extends StatelessWidget {
               Text(
                 rating,
                 style: const TextStyle(
-                    color: AppColors.brownDeep,
+                    color: AppColors.textPrimary,
                     fontSize: 11,
                     fontWeight: FontWeight.w600),
               ),
@@ -1069,7 +1070,7 @@ class _HospitalCard extends StatelessWidget {
                       child: Text(
                         tag,
                         style: const TextStyle(
-                            color: AppColors.brownMid,
+                            color: AppColors.textSecondary,
                             fontSize: 9,
                             fontWeight: FontWeight.w500),
                       ),
@@ -1132,7 +1133,7 @@ class _DoctorPreviewCard extends StatelessWidget {
                     Text(
                       name,
                       style: const TextStyle(
-                        color: AppColors.brownDeep,
+                        color: AppColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1141,7 +1142,7 @@ class _DoctorPreviewCard extends StatelessWidget {
                     Text(
                       specialty,
                       style: const TextStyle(
-                        color: AppColors.brownMid,
+                        color: AppColors.textSecondary,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -1150,7 +1151,7 @@ class _DoctorPreviewCard extends StatelessWidget {
                     Text(
                       hospital,
                       style: const TextStyle(
-                        color: AppColors.brownLight,
+                        color: AppColors.secondary,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -1265,14 +1266,14 @@ class _MedicationCard extends StatelessWidget {
                               const Text(
                                 'Next medication',
                                 style: TextStyle(
-                                    color: AppColors.brownMid,
+                                    color: AppColors.textSecondary,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500),
                               ),
                               Text(
                                 medicineName,
                                 style: const TextStyle(
-                                    color: AppColors.brownDeep,
+                                    color: AppColors.textPrimary,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w800),
                                 maxLines: 1,
@@ -1281,7 +1282,7 @@ class _MedicationCard extends StatelessWidget {
                               Text(
                                 timeText,
                                 style: const TextStyle(
-                                    color: AppColors.brownMid,
+                                    color: AppColors.textSecondary,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500),
                                 maxLines: 1,
@@ -1293,7 +1294,7 @@ class _MedicationCard extends StatelessWidget {
                         ElevatedButton(
                           onPressed: onMarkTaken,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.brownDeep,
+                            backgroundColor: AppColors.textPrimary,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             padding: const EdgeInsets.symmetric(
@@ -1390,7 +1391,7 @@ class _RecentOrderCard extends StatelessWidget {
                       const Text(
                         'Recent Order',
                         style: TextStyle(
-                            color: AppColors.brownDeep,
+                            color: AppColors.textPrimary,
                             fontSize: 15,
                             fontWeight: FontWeight.w700),
                       ),
@@ -1411,7 +1412,7 @@ class _RecentOrderCard extends StatelessWidget {
                   Text(
                     itemText,
                     style: const TextStyle(
-                        color: AppColors.brownDeep,
+                        color: AppColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w500),
                     maxLines: 1,
@@ -1430,7 +1431,7 @@ class _RecentOrderCard extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             const Icon(Icons.chevron_right,
-                color: AppColors.brownMid, size: 24),
+                color: AppColors.textSecondary, size: 24),
           ],
         ),
       ),
@@ -1467,8 +1468,8 @@ class _BottomNav extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           currentIndex: selectedIndex,
           onTap: onTap,
-          selectedItemColor: AppColors.brownDeep,
-          unselectedItemColor: AppColors.brownMid.withValues(alpha: 0.5),
+          selectedItemColor: AppColors.primary,
+          unselectedItemColor: AppColors.textSecondary.withValues(alpha: 0.5),
           backgroundColor: Colors.transparent,
           elevation: 0,
           selectedFontSize: 11,

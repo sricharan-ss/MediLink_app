@@ -71,11 +71,33 @@ export async function getInvoices(filters = {}) {
         where.dueDate = filters.dueDate;
     }
 
+    if (filters.search || filters.q) {
+        const term = (filters.search || filters.q).trim();
+        where.OR = [
+            { invoiceNumber: { contains: term, mode: 'insensitive' } },
+            { notes: { contains: term, mode: 'insensitive' } },
+            { patient: { user: { firstName: { contains: term, mode: 'insensitive' } } } },
+            { patient: { user: { lastName: { contains: term, mode: 'insensitive' } } } },
+        ];
+    }
+
     return await prisma.invoice.findMany({ 
         where,
         include: {
             items: true,
-            payments: true
+            payments: true,
+            patient: {
+                include: {
+                    user: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            phoneNumber: true,
+                            email: true,
+                        },
+                    },
+                },
+            },
         },
         orderBy: {
             createdAt: 'desc'

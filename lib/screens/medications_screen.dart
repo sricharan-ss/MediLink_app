@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../core/app_colors.dart';
 
 import '../services/medication_notification_service.dart';
 import '../services/patient_api_service.dart';
@@ -78,7 +79,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   }
 
   bool _isTakenToday(Map<String, dynamic> schedule) {
-    final lastTakenAt = DateTime.tryParse(schedule['lastTakenAt']?.toString() ?? '');
+    final lastTakenAt =
+        DateTime.tryParse(schedule['lastTakenAt']?.toString() ?? '');
     if (lastTakenAt == null) return false;
     final now = DateTime.now();
     final local = lastTakenAt.toLocal();
@@ -111,7 +113,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
     }
   }
 
-  Future<void> _changeScheduleStatus(Map<String, dynamic> schedule, String action) async {
+  Future<void> _changeScheduleStatus(
+      Map<String, dynamic> schedule, String action) async {
     final id = _text(schedule['id']);
     if (id.isEmpty || _updatingScheduleIds.contains(id)) return;
 
@@ -191,7 +194,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
     final editing = existingSchedule != null;
     var medicineCatalog = <Map<String, dynamic>>[];
     try {
-      medicineCatalog = await PatientApiService.getOrderableMedicines(limit: 100);
+      medicineCatalog =
+          await PatientApiService.getOrderableMedicines(limit: 100);
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -200,11 +204,11 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
       return;
     }
 
-    var selectedMedicineId = existingSchedule == null
-        ? ''
-        : _text(existingSchedule['medicineId']);
+    var selectedMedicineId =
+        existingSchedule == null ? '' : _text(existingSchedule['medicineId']);
     if (selectedMedicineId.isNotEmpty &&
-        !medicineCatalog.any((item) => _text(item['medicineId']) == selectedMedicineId)) {
+        !medicineCatalog
+            .any((item) => _text(item['medicineId']) == selectedMedicineId)) {
       medicineCatalog = [
         {
           'medicineId': selectedMedicineId,
@@ -221,7 +225,9 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
           : _toInt(existingSchedule['quantity'], 1).toString(),
     );
     final instructionsController = TextEditingController(
-      text: existingSchedule == null ? '' : _text(existingSchedule['instructions']),
+      text: existingSchedule == null
+          ? ''
+          : _text(existingSchedule['instructions']),
     );
     TimeOfDay selectedTime = _parseTimeOfDay(
       existingSchedule == null ? '' : _text(existingSchedule['timeOfDay']),
@@ -232,7 +238,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFFFFDF8),
+      backgroundColor: AppColors.background,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -240,11 +246,13 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
         return StatefulBuilder(
           builder: (context, setSheetState) {
             Future<void> save() async {
-              final quantity = int.tryParse(quantityController.text.trim()) ?? 1;
+              final quantity =
+                  int.tryParse(quantityController.text.trim()) ?? 1;
               var closeSheet = false;
               if (selectedMedicineId.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Select a medicine from the catalog')),
+                  const SnackBar(
+                      content: Text('Select a medicine from the catalog')),
                 );
                 return;
               }
@@ -279,7 +287,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
               } catch (error) {
                 if (!mounted) return;
                 messenger.showSnackBar(
-                  SnackBar(content: Text(PatientApiService.friendlyError(error))),
+                  SnackBar(
+                      content: Text(PatientApiService.friendlyError(error))),
                 );
               } finally {
                 if (!closeSheet && mounted) {
@@ -287,7 +296,6 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 }
               }
             }
-
 
             return Padding(
               padding: EdgeInsets.only(
@@ -301,20 +309,24 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    editing ? 'Edit Medicine Schedule' : 'Add Medicine Schedule',
+                    editing
+                        ? 'Edit Medicine Schedule'
+                        : 'Add Medicine Schedule',
                     style: const TextStyle(
-                      color: Color(0xFF3B1F0A),
+                      color: AppColors.textPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    value: selectedMedicineId.isEmpty ? null : selectedMedicineId,
+                    value:
+                        selectedMedicineId.isEmpty ? null : selectedMedicineId,
                     isExpanded: true,
                     decoration: _inputDecoration('Medicine'),
                     items: medicineCatalog.map((medicine) {
-                      final id = _text(medicine['medicineId'], _text(medicine['id']));
+                      final id =
+                          _text(medicine['medicineId'], _text(medicine['id']));
                       final name = _text(medicine['name'], 'Medicine');
                       final type = _text(medicine['type']);
                       return DropdownMenuItem<String>(
@@ -328,7 +340,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                     onChanged: isSaving
                         ? null
                         : (value) {
-                            setSheetState(() => selectedMedicineId = value ?? '');
+                            setSheetState(
+                                () => selectedMedicineId = value ?? '');
                           },
                   ),
                   const SizedBox(height: 12),
@@ -372,8 +385,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                     child: ElevatedButton(
                       onPressed: isSaving ? null : save,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3B1F0A),
-                        foregroundColor: const Color(0xFFFBF6EC),
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(isSaving ? 'Saving...' : 'Save Schedule'),
@@ -398,7 +411,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
     final percent = _toInt(_summary['adherencePercent']);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFDF8),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
         child: RefreshIndicator(
@@ -410,7 +423,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 const Padding(
                   padding: EdgeInsets.only(top: 80),
                   child: Center(
-                    child: CircularProgressIndicator(color: Color(0xFFD4822A)),
+                    child: CircularProgressIndicator(color: AppColors.primary),
                   ),
                 )
               else if (_errorMessage != null)
@@ -420,7 +433,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                     _errorMessage!,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Color(0xFF6B3A1F),
+                      color: AppColors.textSecondary,
                       fontSize: 13,
                     ),
                   ),
@@ -436,8 +449,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                       CircularProgressIndicator(
                         value: (percent.clamp(0, 100)) / 100,
                         strokeWidth: 12,
-                        backgroundColor: const Color(0xFFEFE2CC),
-                        color: const Color(0xFFA0622A),
+                        backgroundColor: AppColors.paleGreen,
+                        color: AppColors.primary,
                       ),
                       Center(
                         child: Column(
@@ -446,15 +459,15 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                             Text(
                               '$percent%',
                               style: const TextStyle(
-                                color: Color(0xFF3B1F0A),
+                                color: AppColors.textPrimary,
                                 fontSize: 36,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             const Text(
                               'completed',
                               style: TextStyle(
-                                color: Color(0xFFA0622A),
+                                color: AppColors.textSecondary,
                                 fontSize: 11,
                               ),
                             ),
@@ -468,7 +481,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                   "Today's Medications",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Color(0xFF3B1F0A),
+                    color: AppColors.textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -478,21 +491,20 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                   '$takenDoses of $totalDoses doses taken',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    color: Color(0xFF6B3A1F),
+                    color: AppColors.textSecondary,
                     fontSize: 13,
                   ),
                 ),
                 const SizedBox(height: 24),
-
                 Row(
                   children: [
                     const Expanded(
                       child: Text(
                         "Today's Schedule",
                         style: TextStyle(
-                          color: Color(0xFF3B1F0A),
+                          color: AppColors.textPrimary,
                           fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -510,7 +522,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                     child: Text(
                       'No medication schedule found yet.',
                       style: TextStyle(
-                        color: Color(0xFF6B3A1F),
+                        color: AppColors.textSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -518,21 +530,28 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 ..._todaySchedule.map((med) {
                   final isDone = _isTakenToday(med);
                   final scheduleId = _text(med['id']);
-                  final medStatus = _text(med['status'], 'ACTIVE').toUpperCase();
+                  final medStatus =
+                      _text(med['status'], 'ACTIVE').toUpperCase();
                   final isPaused = medStatus == 'PAUSED';
                   final isUpdating = _updatingScheduleIds.contains(scheduleId);
                   final status = isDone ? 'Done' : 'Pending';
-                  final statusBgColor =
-                      isPaused ? Colors.grey.shade200 : (isDone ? Colors.green.shade100 : Colors.amber.shade100);
-                  final statusTextColor =
-                      isPaused ? Colors.grey.shade700 : (isDone ? Colors.green.shade700 : Colors.amber.shade700);
+                  final statusBgColor = isPaused
+                      ? Colors.grey.shade200
+                      : (isDone
+                          ? Colors.green.shade100
+                          : Colors.amber.shade100);
+                  final statusTextColor = isPaused
+                      ? Colors.grey.shade700
+                      : (isDone
+                          ? Colors.green.shade700
+                          : Colors.amber.shade700);
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFBF6EC),
-                      border: Border.all(color: const Color(0xFFEFE2CC)),
+                      color: AppColors.white,
+                      border: Border.all(color: AppColors.paleGreen),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Column(
@@ -546,9 +565,9 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                                   Text(
                                     '${_text(med['medicineName'], 'Medicine')} x${_toInt(med['quantity'], 1)} ${_text(med['dosage'])}',
                                     style: const TextStyle(
-                                      color: Color(0xFF3B1F0A),
+                                      color: AppColors.textPrimary,
                                       fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                   const SizedBox(height: 2),
@@ -560,7 +579,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                                       if (isPaused) 'paused',
                                     ].join(' - '),
                                     style: const TextStyle(
-                                      color: Color(0xFF6B3A1F),
+                                      color: AppColors.textSecondary,
                                       fontSize: 12,
                                     ),
                                   ),
@@ -568,7 +587,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 4),
                               decoration: BoxDecoration(
                                 color: statusBgColor,
                                 borderRadius: BorderRadius.circular(12),
@@ -589,14 +609,18 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                           children: [
                             Expanded(
                               child: OutlinedButton.icon(
-                                onPressed: isUpdating || isDone || isPaused ? null : () => _markTaken(med),
+                                onPressed: isUpdating || isDone || isPaused
+                                    ? null
+                                    : () => _markTaken(med),
                                 icon: isUpdating
                                     ? const SizedBox(
                                         width: 14,
                                         height: 14,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2),
                                       )
-                                    : const Icon(Icons.check_circle_outline, size: 16),
+                                    : const Icon(Icons.check_circle_outline,
+                                        size: 16),
                                 label: const Text('Mark Taken'),
                               ),
                             ),
@@ -613,13 +637,16 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                                 }
                               },
                               itemBuilder: (_) => [
-                                const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                                const PopupMenuItem(
+                                    value: 'edit', child: Text('Edit')),
                                 PopupMenuItem(
                                   value: isPaused ? 'resume' : 'pause',
                                   child: Text(isPaused ? 'Resume' : 'Pause'),
                                 ),
-                                const PopupMenuItem(value: 'cancel', child: Text('Cancel')),
-                                const PopupMenuItem(value: 'delete', child: Text('Remove')),
+                                const PopupMenuItem(
+                                    value: 'cancel', child: Text('Cancel')),
+                                const PopupMenuItem(
+                                    value: 'delete', child: Text('Remove')),
                               ],
                             ),
                           ],
@@ -629,16 +656,15 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                   );
                 }),
                 const SizedBox(height: 16),
-
                 if (_refillAlerts.isNotEmpty) ...[
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Refill Alerts',
                       style: TextStyle(
-                        color: Color(0xFF3B1F0A),
+                        color: AppColors.textPrimary,
                         fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -655,7 +681,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.error_outline, color: Colors.amber.shade600, size: 20),
+                          Icon(Icons.error_outline,
+                              color: Colors.amber.shade600, size: 20),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
@@ -672,7 +699,9 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                                 const SizedBox(height: 2),
                                 Text(
                                   'Low stock - Qty ${_toInt(med['quantity'])} (reorder at ${_toInt(med['reorderLevel'])})',
-                                  style: TextStyle(color: Colors.amber.shade700, fontSize: 12),
+                                  style: TextStyle(
+                                      color: Colors.amber.shade700,
+                                      fontSize: 12),
                                 ),
                                 const SizedBox(height: 8),
                                 GestureDetector(
@@ -706,39 +735,40 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                   }),
                   const SizedBox(height: 16),
                 ],
-
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () async {
                       await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const OrderMedicinesScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const OrderMedicinesScreen()),
                       );
                       if (mounted) _loadMedicationDashboard();
                     },
                     icon: const Icon(Icons.add, size: 20),
                     label: const Text('Order Medicines'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3B1F0A),
-                      foregroundColor: const Color(0xFFFBF6EC),
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
                       elevation: 0,
-                      textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      textStyle: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),
                 const SizedBox(height: 24),
-
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Ongoing Orders',
                     style: TextStyle(
-                      color: Color(0xFF3B1F0A),
+                      color: AppColors.textPrimary,
                       fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -746,7 +776,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 if (_orders.isEmpty)
                   const Text(
                     'No active orders.',
-                    style: TextStyle(color: Color(0xFF6B3A1F), fontSize: 12),
+                    style:
+                        TextStyle(color: AppColors.textSecondary, fontSize: 12),
                   ),
                 ..._orders.map((order) {
                   final items = _mapList(order['items']);
@@ -774,8 +805,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                       margin: const EdgeInsets.only(bottom: 8),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFBF6EC),
-                        border: Border.all(color: const Color(0xFFEFE2CC)),
+                        color: AppColors.white,
+                        border: Border.all(color: AppColors.paleGreen),
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Column(
@@ -787,20 +818,22 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                               Text(
                                 _text(order['id']),
                                 style: const TextStyle(
-                                  color: Color(0xFFA0622A),
+                                  color: AppColors.primary,
                                   fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const Icon(Icons.chevron_right, color: Color(0xFFA0622A), size: 16),
+                              const Icon(Icons.chevron_right,
+                                  color: AppColors.textSecondary, size: 16),
                             ],
                           ),
                           const SizedBox(height: 8),
                           Text(
                             itemLabel,
                             style: const TextStyle(
-                              color: Color(0xFF3B1F0A),
+                              color: AppColors.textPrimary,
                               fontSize: 13,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -810,15 +843,15 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                               Text(
                                 _text(order['status']),
                                 style: const TextStyle(
-                                  color: Color(0xFFD4822A),
+                                  color: AppColors.primary,
                                   fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               Text(
                                 'Delivery: ${_formatDate(expectedDelivery)}',
                                 style: const TextStyle(
-                                  color: Color(0xFF6B3A1F),
+                                  color: AppColors.textSecondary,
                                   fontSize: 11,
                                 ),
                               ),
@@ -875,7 +908,20 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   String _formatDate(String isoString) {
     try {
       final date = DateTime.parse(isoString);
-      final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      final months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+      ];
       return '${months[date.month - 1]} ${date.day}';
     } catch (_) {
       return isoString;
@@ -906,19 +952,20 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
+      labelStyle: const TextStyle(color: AppColors.textSecondary),
       filled: true,
-      fillColor: const Color(0xFFFBF6EC),
+      fillColor: AppColors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFEFE2CC)),
+        borderSide: const BorderSide(color: AppColors.paleGreen),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFEFE2CC)),
+        borderSide: const BorderSide(color: AppColors.paleGreen),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFD4822A)),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
       ),
     );
   }

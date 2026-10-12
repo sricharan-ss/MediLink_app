@@ -2,6 +2,7 @@ import cloudinary from '../../config/cloudinary.config.js';
 import {
   addFileToVault,
   addProfile,
+  deleteVault,
   getMyInfo,
   getProfile,
   getUserById,
@@ -54,7 +55,26 @@ export const getUserByNameController = async (req, res) => {
 export const myInfoController = async (req, res) => {
   const userId = req.userId;
   const user = await getMyInfo({ userId });
-  res.json({ status: 'success', data: user });
+  if (!user) {
+    return res.status(404).json({ status: 'ERROR', message: 'User not found' });
+  }
+  const roles = [];
+  if (user.superAdmin) roles.push('SUPER_ADMIN');
+  if (user.hospitalAdmin) roles.push('HOSPITAL_ADMIN');
+  if (user.doctor) roles.push('DOCTOR');
+  if (user.nurse) roles.push('NURSE');
+  if (user.receptionist) roles.push('RECEPTIONIST');
+  if (user.labManager) roles.push('LAB_MANAGER');
+  if (user.inventoryManager) roles.push('INVENTORY_MANAGER');
+  if (user.patient) roles.push('PATIENT');
+
+  res.json({
+    status: 'success',
+    data: {
+      ...user,
+      roles,
+    },
+  });
 };
 
 export const uploadProfilePhoto = async (req, res) => {
@@ -93,27 +113,53 @@ export const uploadVault = async (req, res) => {
       message: 'something went wrong with upload',
     });
   }
-  const cloudUpload = await cloudinary.uploader.upload(file, {
-    use_filename: true,
-    unique_filename: false,
-    folder: 'medilink_user_vault',
-    overwrite: true,
-    quality: 'auto:eco',
-  });
-  await addFileToVault({
-    userId,
-    fileName: cloudUpload.original_filename,
-    fileUrl: cloudUpload.secure_url,
-  });
-  fs.unlink(file, (err) => {
-    if (err) {
-      console.log('cannot delete the file');
+
+  const isCloudinaryConfigured =
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_KEY_NAME &&
+    process.env.CLOUDINARY_API_SECRET &&
+    process.env.CLOUDINARY_API_KEY.trim() !== '' &&
+    process.env.CLOUDINARY_KEY_NAME.trim() !== '' &&
+    process.env.CLOUDINARY_API_SECRET.trim() !== '';
+
+  if (!isCloudinaryConfigured) {
+    if (fs.existsSync(file)) {
+      fs.unlink(file, () => {});
     }
-  });
-  return res.status(201).json({
-    message: 'file uploaded successfully',
-    success: true,
-  });
+    return res.status(503).json({
+      success: false,
+      message:
+        'Cloudinary credentials are not configured in the backend environment. Please set CLOUDINARY_KEY_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.',
+    });
+  }
+
+  try {
+    const cloudUpload = await cloudinary.uploader.upload(file, {
+      use_filename: true,
+      unique_filename: false,
+      folder: 'medilink_user_vault',
+      overwrite: true,
+      quality: 'auto:eco',
+    });
+    await addFileToVault({
+      userId,
+      fileName: cloudUpload.original_filename || req.file?.originalname || 'document',
+      fileUrl: cloudUpload.secure_url,
+    });
+    fs.unlink(file, () => {});
+    return res.status(201).json({
+      message: 'file uploaded successfully',
+      success: true,
+    });
+  } catch (err) {
+    if (fs.existsSync(file)) {
+      fs.unlink(file, () => {});
+    }
+    return res.status(502).json({
+      success: false,
+      message: `Failed to upload file to Cloudinary: ${err.message}`,
+    });
+  }
 };
 
 export const getProfilePhoto = async (req, res) => {
@@ -128,10 +174,33 @@ export const getProfilePhoto = async (req, res) => {
 
 export const getVaultData = async (req, res) => {
   const userId = req.userId;
-  const { vaults } = await getVault({ userId });
+  const vaultData = await getVault({ userId });
+  const vaults = vaultData?.vaults || [];
   res.status(200).json({
     success: true,
     message: 'vault data',
     vaults,
+  });
+};
+
+export const deleteVaultData = async (req, res) => {
+  const userId = req.userId;
+  const vaultId = req.params.id;
+  if (!vaultId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Document ID is required',
+    });
+  }
+  const deleted = await deleteVault({ userId, vaultId });
+  if (!deleted) {
+    return res.status(404).json({
+      success: false,
+      message: 'Document not found or unauthorized',
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    message: 'Document deleted successfully',
   });
 };

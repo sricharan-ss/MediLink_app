@@ -131,7 +131,8 @@ class _FeatureIconsCluster extends StatefulWidget {
   State<_FeatureIconsCluster> createState() => _FeatureIconsClusterState();
 }
 
-class _FeatureIconsClusterState extends State<_FeatureIconsCluster> with SingleTickerProviderStateMixin {
+class _FeatureIconsClusterState extends State<_FeatureIconsCluster>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   static const _phases = [0.0, 1.7, 3.4, 5.1];
   static const _phaseOffsets = [0.8, 2.1, 1.2, 2.7];

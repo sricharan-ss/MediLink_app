@@ -103,10 +103,12 @@ class AppearanceScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.paleGreen.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.4)),
+                        border: Border.all(
+                            color: AppColors.secondary.withValues(alpha: 0.4)),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -159,7 +161,8 @@ class AppearanceScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('MediLink Light theme is active')),
+                      const SnackBar(
+                          content: Text('MediLink Light theme is active')),
                     );
                   },
                   style: ElevatedButton.styleFrom(

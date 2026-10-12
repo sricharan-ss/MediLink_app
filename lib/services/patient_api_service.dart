@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/backend_config.dart';
 import '../core/session_store.dart';
@@ -226,7 +227,8 @@ class PatientApiService {
       // Backend /api/doctors/doctor-schedule requires staff role. Fall through to schedule generator.
     }
 
-    final isWeekend = date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
+    final isWeekend =
+        date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
     final slotTimes = isWeekend ? _weekendSlots : _weekdaySlots;
 
     return slotTimes
@@ -278,7 +280,8 @@ class PatientApiService {
     return data.map(PatientAppointment.fromJson).toList();
   }
 
-  static Future<PatientAppointment> getAppointmentDetails(String encounterId) async {
+  static Future<PatientAppointment> getAppointmentDetails(
+      String encounterId) async {
     final data = await _getMap('/api/encounters/$encounterId');
     return PatientAppointment.fromJson(data);
   }
@@ -314,7 +317,8 @@ class PatientApiService {
   // MEDICAL RECORDS
   // ==========================================
 
-  static Future<List<Map<String, dynamic>>> getPrescriptions({int limit = 50}) async {
+  static Future<List<Map<String, dynamic>>> getPrescriptions(
+      {int limit = 50}) async {
     try {
       final patientId = SessionStore.patientId;
       final prescData = await _getList('/api/prescriptions', {
@@ -339,7 +343,8 @@ class PatientApiService {
       final patientId = SessionStore.patientId;
       final query = <String, String?>{
         if (patientId != null && patientId.isNotEmpty) 'patientId': patientId,
-        if (encounterId != null && encounterId.isNotEmpty) 'encounterId': encounterId,
+        if (encounterId != null && encounterId.isNotEmpty)
+          'encounterId': encounterId,
         'limit': '$limit',
       };
       final data = await _getList('/api/summaries', query);
@@ -359,7 +364,8 @@ class PatientApiService {
     }
   }
 
-  static Future<PatientSummary?> getSummaryByEncounter(String encounterId) async {
+  static Future<PatientSummary?> getSummaryByEncounter(
+      String encounterId) async {
     try {
       final list = await getSummaries(encounterId: encounterId);
       if (list.isNotEmpty) {
@@ -367,6 +373,25 @@ class PatientApiService {
       }
     } catch (_) {}
     return null;
+  }
+
+  static Future<List<Map<String, dynamic>>> getLabResults({
+    String? encounterId,
+    int limit = 50,
+  }) async {
+    try {
+      final patientId = SessionStore.patientId;
+      final query = <String, String?>{
+        if (patientId != null && patientId.isNotEmpty) 'patientId': patientId,
+        if (encounterId != null && encounterId.isNotEmpty)
+          'encounterId': encounterId,
+        'limit': '$limit',
+      };
+      final data = await _getList('/api/labs/results', query);
+      return _mapList(data);
+    } catch (_) {
+      return const [];
+    }
   }
 
   static Future<PatientRecords> getRecords() async {
@@ -391,12 +416,26 @@ class PatientApiService {
       summaries = [];
     }
 
+    List<Map<String, dynamic>> labReports = [];
+    try {
+      labReports = await getLabResults();
+    } catch (_) {
+      labReports = [];
+    }
+
+    List<Map<String, dynamic>> vault = [];
+    try {
+      vault = await getVaultFiles();
+    } catch (_) {
+      vault = [];
+    }
+
     return PatientRecords(
       appointments: appointments,
       prescriptions: prescriptions,
       summaries: summaries,
-      labReports: const [],
-      vault: const [],
+      labReports: labReports,
+      vault: vault,
       medications: const [],
     );
   }
@@ -405,21 +444,117 @@ class PatientApiService {
   // MEDICATIONS & ORDERS (Real Invoice + Inventory Backend)
   // ==========================================
 
+  static String get _schedulesStorageKey =>
+      'medilink_medication_schedules_${SessionStore.patientId ?? "patient"}';
+
+  static Future<List<Map<String, dynamic>>> _loadStoredSchedules() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_schedulesStorageKey);
+      if (raw != null && raw.isNotEmpty) {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          return _mapList(decoded);
+        }
+      }
+    } catch (_) {}
+    return [];
+  }
+
+  static Future<void> _saveStoredSchedules(
+      List<Map<String, dynamic>> schedules) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_schedulesStorageKey, jsonEncode(schedules));
+    } catch (_) {}
+  }
+
   static Future<Map<String, dynamic>> getMedicationDashboard() async {
     final prescriptions = await getPrescriptions();
+    var schedules = await _loadStoredSchedules();
+
+    // Seed from active prescriptions if none currently stored
+    if (schedules.isEmpty && prescriptions.isNotEmpty) {
+      final seeded = <Map<String, dynamic>>[];
+      for (final p in prescriptions) {
+        final medicines = p['medicines'];
+        if (medicines is List) {
+          for (final med in medicines) {
+            final m = med is Map ? med : {};
+            final medId = _string(m['medicineId'] ?? m['id']);
+            final name = _string(
+              m['name'] ?? m['medicineName'] ?? m['medicine']?['name'],
+              'Prescribed Medicine',
+            );
+            final dosage = _string(m['dosage'], '1 dose');
+            final freq = _string(m['frequency']);
+            final schedId =
+                'sched-${p['prescriptionId'] ?? 'p'}-${medId.isNotEmpty ? medId : seeded.length}';
+
+            if (!seeded.any((s) => s['id'] == schedId)) {
+              seeded.add({
+                'id': schedId,
+                'medicineId': medId,
+                'medicineName': name,
+                'quantity': 1,
+                'dosage': dosage,
+                'frequency': freq.isNotEmpty ? freq : null,
+                'timeOfDay': '09:00',
+                'instructions': 'Prescribed by doctor ($dosage)',
+                'status': 'ACTIVE',
+                'isLocalReminder': true,
+                'lastTakenAt': null,
+              });
+            }
+          }
+        }
+      }
+      if (seeded.isNotEmpty) {
+        schedules = seeded;
+        await _saveStoredSchedules(schedules);
+      }
+    }
+
+    final activeSchedules = schedules
+        .where(
+          (s) => _string(s['status'], 'ACTIVE').toUpperCase() == 'ACTIVE',
+        )
+        .toList();
+    final now = DateTime.now();
+    final dosesCompletedToday = activeSchedules.where((s) {
+      final lastTaken = DateTime.tryParse(_string(s['lastTakenAt']));
+      if (lastTaken == null) return false;
+      final local = lastTaken.toLocal();
+      return local.year == now.year &&
+          local.month == now.month &&
+          local.day == now.day;
+    }).length;
+
     return {
       'summary': {
         'activePrescriptions': prescriptions.length,
-        'todayDosesCount': prescriptions.length * 2,
-        'dosesCompletedToday': 0,
+        'todayDosesCount': activeSchedules.length,
+        'dosesCompletedToday': dosesCompletedToday,
       },
-      'todaySchedule': <Map<String, dynamic>>[],
+      'todaySchedule': schedules,
       'refillAlerts': <Map<String, dynamic>>[],
       'activeOrders': <Map<String, dynamic>>[],
     };
   }
 
-  static Future<Map<String, dynamic>> markMedicationTaken(String scheduleId) async {
+  static Future<Map<String, dynamic>> markMedicationTaken(
+      String scheduleId) async {
+    final schedules = await _loadStoredSchedules();
+    final updated = schedules.map((s) {
+      if (_string(s['id']) == scheduleId) {
+        return {
+          ...s,
+          'lastTakenAt': DateTime.now().toIso8601String(),
+        };
+      }
+      return s;
+    }).toList();
+    await _saveStoredSchedules(updated);
     return {'status': 'COMPLETED', 'scheduleId': scheduleId};
   }
 
@@ -427,10 +562,26 @@ class PatientApiService {
     required String scheduleId,
     required String action,
   }) async {
+    final schedules = await _loadStoredSchedules();
+    final updated = schedules.map((s) {
+      if (_string(s['id']) == scheduleId) {
+        return {
+          ...s,
+          'status': action,
+        };
+      }
+      return s;
+    }).toList();
+    await _saveStoredSchedules(updated);
     return {'status': action, 'scheduleId': scheduleId};
   }
 
-  static Future<Map<String, dynamic>> deleteMedicationSchedule(String scheduleId) async {
+  static Future<Map<String, dynamic>> deleteMedicationSchedule(
+      String scheduleId) async {
+    final schedules = await _loadStoredSchedules();
+    final updated =
+        schedules.where((s) => _string(s['id']) != scheduleId).toList();
+    await _saveStoredSchedules(updated);
     return {'deleted': true, 'scheduleId': scheduleId};
   }
 
@@ -443,16 +594,32 @@ class PatientApiService {
     String? time,
     String? instructions,
   }) async {
-    return {
-      'id': 'sched-${DateTime.now().millisecondsSinceEpoch}',
+    final schedules = await _loadStoredSchedules();
+    final id = 'sched-${DateTime.now().millisecondsSinceEpoch}';
+    final reminderTime = timeOfDay ?? time ?? '09:00';
+    final newSchedule = {
+      'id': id,
       'medicineId': medicineId,
       'medicineName': medicineName ?? 'Scheduled Medicine',
       'quantity': quantity ?? 1,
       'dosage': dosage ?? '${quantity ?? 1} unit',
-      'timeOfDay': timeOfDay ?? time ?? '09:00',
-      'time': time ?? timeOfDay ?? '09:00',
+      'timeOfDay': reminderTime,
+      'time': reminderTime,
       'instructions': instructions,
+      'status': 'ACTIVE',
+      'isLocalReminder': true,
+      'lastTakenAt': null,
     };
+    final exists = schedules.any((s) =>
+        medicineId != null &&
+        medicineId.isNotEmpty &&
+        _string(s['medicineId']) == medicineId &&
+        _string(s['timeOfDay']) == reminderTime);
+    if (!exists) {
+      schedules.add(newSchedule);
+      await _saveStoredSchedules(schedules);
+    }
+    return newSchedule;
   }
 
   static Future<Map<String, dynamic>> updateMedicationSchedule({
@@ -465,16 +632,38 @@ class PatientApiService {
     String? time,
     String? instructions,
   }) async {
-    return {
-      'id': scheduleId,
-      'medicineId': medicineId,
-      'medicineName': medicineName ?? 'Scheduled Medicine',
-      'quantity': quantity ?? 1,
-      'dosage': dosage ?? '${quantity ?? 1} unit',
-      'timeOfDay': timeOfDay ?? time ?? '09:00',
-      'time': time ?? timeOfDay ?? '09:00',
-      'instructions': instructions,
-    };
+    final schedules = await _loadStoredSchedules();
+    Map<String, dynamic>? updatedSchedule;
+    final updated = schedules.map((s) {
+      if (_string(s['id']) == scheduleId) {
+        updatedSchedule = {
+          ...s,
+          if (medicineId != null) 'medicineId': medicineId,
+          if (medicineName != null) 'medicineName': medicineName,
+          if (quantity != null) 'quantity': quantity,
+          if (dosage != null) 'dosage': dosage,
+          if (timeOfDay != null || time != null)
+            'timeOfDay': timeOfDay ?? time ?? '09:00',
+          if (timeOfDay != null || time != null)
+            'time': time ?? timeOfDay ?? '09:00',
+          if (instructions != null) 'instructions': instructions,
+        };
+        return updatedSchedule!;
+      }
+      return s;
+    }).toList();
+    await _saveStoredSchedules(updated);
+    return updatedSchedule ??
+        {
+          'id': scheduleId,
+          'medicineId': medicineId,
+          'medicineName': medicineName ?? 'Scheduled Medicine',
+          'quantity': quantity ?? 1,
+          'dosage': dosage ?? '${quantity ?? 1} unit',
+          'timeOfDay': timeOfDay ?? time ?? '09:00',
+          'time': time ?? timeOfDay ?? '09:00',
+          'instructions': instructions,
+        };
   }
 
   static Future<List<Map<String, dynamic>>> getOrderableMedicines({
@@ -562,7 +751,8 @@ class PatientApiService {
     }).toList();
   }
 
-  static Future<Map<String, dynamic>> getMedicationOrderById(String invoiceId) async {
+  static Future<Map<String, dynamic>> getMedicationOrderById(
+      String invoiceId) async {
     final invoice = await _getMap('/api/payments/invoices/$invoiceId');
     if (invoice.isEmpty) return {};
 
@@ -609,11 +799,13 @@ class PatientApiService {
       'items': items,
     };
 
-    final result = await _postMap('/api/payments/invoices/medicine-order', payload);
+    final result =
+        await _postMap('/api/payments/invoices/medicine-order', payload);
     return result;
   }
 
-  static Future<Map<String, dynamic>> cancelMedicationOrder(String invoiceId) async {
+  static Future<Map<String, dynamic>> cancelMedicationOrder(
+      String invoiceId) async {
     return await _deleteMap('/api/payments/invoices/$invoiceId');
   }
 
@@ -622,7 +814,8 @@ class PatientApiService {
   // ==========================================
 
   static Future<Map<String, dynamic>> createMedicationOrderPayment(
-      String invoiceId, {num? amount}) {
+      String invoiceId,
+      {num? amount}) {
     return _postMap('/api/payments/order', {
       'invoiceId': invoiceId,
       if (amount != null) 'amount': amount,
@@ -658,12 +851,7 @@ class PatientApiService {
       final data = await _getList('/api/payments', query);
       return data.map(PatientPayment.fromJson).toList();
     } catch (_) {
-      try {
-        final data = await _getList('/api/payments/invoices');
-        return data.map(PatientPayment.fromJson).toList();
-      } catch (_) {
-        return const [];
-      }
+      return const [];
     }
   }
 
@@ -694,7 +882,8 @@ class PatientApiService {
   // FAVORITE DOCTOR (SessionStore + Patient Profile)
   // ==========================================
 
-  static Future<Map<String, dynamic>> toggleFavoriteDoctor(String doctorId) async {
+  static Future<Map<String, dynamic>> toggleFavoriteDoctor(
+      String doctorId) async {
     final id = doctorId.trim();
     if (id.isEmpty) {
       return {'isFavorite': false};
@@ -708,7 +897,9 @@ class PatientApiService {
       try {
         final ageVal = int.tryParse(SessionStore.ageLabel) ?? 25;
         final genderVal = SessionStore.genderLabel.trim().toLowerCase();
-        final effectiveGender = (genderVal == 'male' || genderVal == 'female' || genderVal == 'other')
+        final effectiveGender = (genderVal == 'male' ||
+                genderVal == 'female' ||
+                genderVal == 'other')
             ? genderVal
             : 'male';
 
@@ -775,11 +966,31 @@ class PatientApiService {
         );
       }
       final data = decoded['data'];
-      return data is Map<String, dynamic> ? data : <String, dynamic>{};
+      return data is Map<String, dynamic> ? data : decoded;
     } catch (error) {
       if (error is PatientApiException) rethrow;
       throw const PatientApiException(
           'Could not upload the file. Please try again.');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getVaultFiles() async {
+    try {
+      final decoded = await _request(
+        () => http.get(_uri('/api/users/vault'), headers: _headers()),
+      );
+      final list = decoded['vaults'] ?? decoded['data'];
+      if (list is List) return _mapList(list);
+    } catch (_) {}
+    return const [];
+  }
+
+  static Future<bool> deleteVaultFile(dynamic vaultId) async {
+    try {
+      final decoded = await _deleteMap('/api/users/vault/$vaultId');
+      return decoded['success'] == true;
+    } catch (e) {
+      throw PatientApiException(friendlyError(e));
     }
   }
 
@@ -794,7 +1005,10 @@ class PatientApiService {
     final decoded = await _request(
       () => http.get(_uri(path, query), headers: _headers()),
     );
-    final data = decoded['data'] ?? decoded['doctors'] ?? decoded['encounters'] ?? decoded['notifications'];
+    final data = decoded['data'] ??
+        decoded['doctors'] ??
+        decoded['encounters'] ??
+        decoded['notifications'];
     if (data is List) return data;
     return const [];
   }
@@ -832,7 +1046,6 @@ class PatientApiService {
     return decoded;
   }
 
-
   static Future<Map<String, dynamic>> _deleteMap(String path) async {
     final decoded = await _request(
       () => http.delete(_uri(path), headers: _headers()),
@@ -847,9 +1060,14 @@ class PatientApiService {
   ) async {
     try {
       final response = await action();
-      final decoded = response.body.isEmpty
+      final dynamic rawDecoded = response.body.isEmpty
           ? <String, dynamic>{}
-          : jsonDecode(response.body) as Map<String, dynamic>;
+          : jsonDecode(response.body);
+      final Map<String, dynamic> decoded = rawDecoded is List
+          ? {'data': rawDecoded}
+          : (rawDecoded is Map<String, dynamic>
+              ? rawDecoded
+              : <String, dynamic>{});
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded;
       }
@@ -979,12 +1197,16 @@ class PatientDoctor {
 
   factory PatientDoctor.fromJson(dynamic json) {
     final map = json as Map<String, dynamic>;
-    final user = map['user'] is Map<String, dynamic> ? map['user'] as Map<String, dynamic> : null;
+    final user = map['user'] is Map<String, dynamic>
+        ? map['user'] as Map<String, dynamic>
+        : null;
     final doctorName = user != null
         ? 'Dr. ${user['firstName'] ?? ''} ${user['lastName'] ?? ''}'.trim()
         : _string(map['name'], 'Doctor');
 
-    final hospital = map['hospital'] is Map<String, dynamic> ? map['hospital'] as Map<String, dynamic> : null;
+    final hospital = map['hospital'] is Map<String, dynamic>
+        ? map['hospital'] as Map<String, dynamic>
+        : null;
     final hospitalName = hospital != null
         ? _string(hospital['name'], 'MediLink Hospital')
         : _string(map['hospitalName'], 'MediLink Hospital');
@@ -998,7 +1220,8 @@ class PatientDoctor {
       id: _string(map['doctorId'] ?? map['id']),
       name: doctorName.isEmpty ? 'Doctor' : doctorName,
       specialty: rawSpecialty,
-      specialization: _nullableString(map['specialization'] ?? map['specialty']),
+      specialization:
+          _nullableString(map['specialization'] ?? map['specialty']),
       hospitalId: _nullableString(map['hospitalId'] ?? hospital?['hospitalId']),
       hospitalName: hospitalName,
       rating: _double(map['avgRating'] ?? map['rating'], 4.6),
@@ -1222,11 +1445,15 @@ class PatientPayment {
       amount: _double(map['amount'] ?? invoice?['amount'], 0.0),
       currency: _string(map['currency'] ?? invoice?['currency'], 'INR'),
       orderId: _nullableString(map['orderId'] ?? invoice?['orderId']),
-      transactionId: _nullableString(map['transactionId'] ?? map['razorpayPaymentId']),
-      mode: _string(map['mode'] ?? map['paymentMethod'], 'ONLINE').toUpperCase(),
-      status: _string(map['status'] ?? invoice?['status'], 'PAID').toUpperCase(),
+      transactionId:
+          _nullableString(map['transactionId'] ?? map['razorpayPaymentId']),
+      mode:
+          _string(map['mode'] ?? map['paymentMethod'], 'ONLINE').toUpperCase(),
+      status:
+          _string(map['status'] ?? invoice?['status'], 'PAID').toUpperCase(),
       paidAt: _date(map['paidAt'] ?? map['createdAt']),
-      invoiceTitle: _nullableString(invoice?['title'] ?? invoice?['description']),
+      invoiceTitle: _nullableString(
+          invoice?['notes'] ?? invoice?['title'] ?? invoice?['description']),
     );
   }
 }

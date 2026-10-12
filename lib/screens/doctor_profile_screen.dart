@@ -29,7 +29,7 @@ class DoctorProfileScreen extends StatefulWidget {
     required this.totalPatients,
     required this.fee,
     this.videoUrl,
-    this.verified = true, // default to true to match design
+    this.verified = true,
     this.aiRecommended = false,
   });
 
@@ -76,7 +76,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
         if (videoUrl.isNotEmpty) _videoUrl = videoUrl;
       });
     } catch (_) {
-      // Keep the local SessionStore state if profile request fails
+      // Keep local session state
     }
   }
 
@@ -106,7 +106,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(PatientApiService.friendlyError(error)),
-          backgroundColor: const Color(0xFFD9534F),
+          backgroundColor: AppColors.error,
         ),
       );
     } finally {
@@ -117,18 +117,18 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFDF8),
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           Column(
             children: [
-              // Brown Header
+              // MediLink Header
               Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: [AppColors.brownDeep, AppColors.brownMid],
+                    colors: [AppColors.primary, AppColors.secondary],
                   ),
                 ),
                 child: SafeArea(
@@ -164,9 +164,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                               _isFavorite
                                   ? Icons.favorite
                                   : Icons.favorite_border,
-                              color: _isFavorite
-                                  ? const Color(0xFFD9534F)
-                                  : Colors.white,
+                              color:
+                                  _isFavorite ? AppColors.error : Colors.white,
                             ),
                             tooltip: _isFavorite
                                 ? 'Remove from Favorites'
@@ -186,7 +185,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.only(
                     bottom: 100,
-                  ), // space for bottom bar
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -196,9 +195,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFBF6EC),
-                            border: Border.all(color: const Color(0xFFEFE2CC)),
+                            color: AppColors.white,
+                            border: Border.all(color: AppColors.paleGreen),
                             borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.02),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,8 +221,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                         colors: [
-                                          Color(0xFFD4822A),
-                                          Color(0xFFA0622A),
+                                          AppColors.primary,
+                                          AppColors.secondary,
                                         ],
                                       ),
                                     ),
@@ -226,13 +232,12 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                               widget.name.length > 4
                                           ? widget.name[4]
                                           : (widget.name.isNotEmpty
-                                                ? widget.name[0]
-                                                : 'D'),
+                                              ? widget.name[0]
+                                              : 'D'),
                                       style: const TextStyle(
-                                        color: Color(0xFFFBF6EC),
+                                        color: Colors.white,
                                         fontSize: 28,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Playfair Display',
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
@@ -245,18 +250,18 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                         Text(
                                           widget.name,
                                           style: const TextStyle(
-                                            color: Color(0xFF3B1F0A),
+                                            color: AppColors.textPrimary,
                                             fontSize: 18,
                                             fontWeight: FontWeight.w700,
-                                            fontFamily: 'Playfair Display',
                                           ),
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
                                           widget.specialty,
                                           style: const TextStyle(
-                                            color: Color(0xFF6B3A1F),
+                                            color: AppColors.secondary,
                                             fontSize: 13,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                         const SizedBox(height: 8),
@@ -268,13 +273,11 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                               Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 2,
-                                                    ),
+                                                  horizontal: 10,
+                                                  vertical: 2,
+                                                ),
                                                 decoration: BoxDecoration(
-                                                  color: const Color(
-                                                    0xFFD4822A,
-                                                  ).withValues(alpha: 0.1),
+                                                  color: AppColors.paleGreen,
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                 ),
@@ -291,7 +294,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                                     Text(
                                                       'MediLink Verified',
                                                       style: TextStyle(
-                                                        color: AppColors.primary,
+                                                        color:
+                                                            AppColors.primary,
                                                         fontSize: 10,
                                                         fontWeight:
                                                             FontWeight.w600,
@@ -304,12 +308,12 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                               Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 2,
-                                                    ),
+                                                  horizontal: 10,
+                                                  vertical: 2,
+                                                ),
                                                 decoration: BoxDecoration(
-                                                  color: Colors.purple
-                                                      .withValues(alpha: 0.1),
+                                                  color: AppColors.sage
+                                                      .withValues(alpha: 0.5),
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                 ),
@@ -319,17 +323,18 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                                   children: [
                                                     Icon(
                                                       Icons.auto_awesome,
-                                                      color: Colors.purple,
+                                                      color: AppColors.primary,
                                                       size: 10,
                                                     ),
                                                     SizedBox(width: 4),
                                                     Text(
                                                       'AI Recommended',
                                                       style: TextStyle(
-                                                        color: Colors.purple,
+                                                        color:
+                                                            AppColors.primary,
                                                         fontSize: 10,
                                                         fontWeight:
-                                                            FontWeight.w500,
+                                                            FontWeight.w600,
                                                       ),
                                                     ),
                                                   ],
@@ -349,8 +354,9 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                                 ),
                                                 decoration: BoxDecoration(
                                                   color: _isFavorite
-                                                      ? const Color(0xFFD9534F)
-                                                          .withValues(alpha: 0.12)
+                                                      ? AppColors.error
+                                                          .withValues(
+                                                              alpha: 0.12)
                                                       : AppColors.paleGreen,
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -365,8 +371,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                                           : Icons
                                                               .favorite_border,
                                                       color: _isFavorite
-                                                          ? const Color(
-                                                              0xFFD9534F)
+                                                          ? AppColors.error
                                                           : AppColors.primary,
                                                       size: 11,
                                                     ),
@@ -377,8 +382,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                                           : 'Add to Favorites',
                                                       style: TextStyle(
                                                         color: _isFavorite
-                                                            ? const Color(
-                                                                0xFFD9534F)
+                                                            ? AppColors.error
                                                             : AppColors.primary,
                                                         fontSize: 10,
                                                         fontWeight:
@@ -398,7 +402,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                               ),
                               const SizedBox(height: 12),
                               const Divider(
-                                color: Color(0xFFEFE2CC),
+                                color: AppColors.paleGreen,
                                 height: 1,
                               ),
                               const SizedBox(height: 12),
@@ -413,16 +417,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                           children: [
                                             const Icon(
                                               Icons.work_outline,
-                                              color: Color(0xFFA0622A),
+                                              color: AppColors.secondary,
                                               size: 14,
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
                                               '${widget.experience}y',
                                               style: const TextStyle(
-                                                color: Color(0xFF3B1F0A),
+                                                color: AppColors.textPrimary,
                                                 fontSize: 15,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.w600,
                                               ),
                                             ),
                                           ],
@@ -431,7 +435,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                         const Text(
                                           'experience',
                                           style: TextStyle(
-                                            color: Color(0xFFA0622A),
+                                            color: AppColors.textSecondary,
                                             fontSize: 10,
                                           ),
                                         ),
@@ -441,7 +445,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                   Container(
                                     width: 1,
                                     height: 30,
-                                    color: const Color(0xFFEFE2CC),
+                                    color: AppColors.paleGreen,
                                   ),
                                   Expanded(
                                     child: Column(
@@ -452,16 +456,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                           children: [
                                             const Icon(
                                               Icons.people_outline,
-                                              color: Color(0xFFA0622A),
+                                              color: AppColors.secondary,
                                               size: 14,
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
                                               '${widget.totalPatients}+',
                                               style: const TextStyle(
-                                                color: Color(0xFF3B1F0A),
+                                                color: AppColors.textPrimary,
                                                 fontSize: 15,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.w600,
                                               ),
                                             ),
                                           ],
@@ -470,7 +474,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                         const Text(
                                           'patients',
                                           style: TextStyle(
-                                            color: Color(0xFFA0622A),
+                                            color: AppColors.textSecondary,
                                             fontSize: 10,
                                           ),
                                         ),
@@ -480,7 +484,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                   Container(
                                     width: 1,
                                     height: 30,
-                                    color: const Color(0xFFEFE2CC),
+                                    color: AppColors.paleGreen,
                                   ),
                                   const Expanded(
                                     child: Column(
@@ -491,16 +495,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                           children: [
                                             Icon(
                                               Icons.school_outlined,
-                                              color: Color(0xFFA0622A),
+                                              color: AppColors.secondary,
                                               size: 14,
                                             ),
                                             SizedBox(width: 4),
                                             Text(
                                               'MD',
                                               style: TextStyle(
-                                                color: Color(0xFF3B1F0A),
+                                                color: AppColors.textPrimary,
                                                 fontSize: 15,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.w600,
                                               ),
                                             ),
                                           ],
@@ -509,7 +513,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                         Text(
                                           'credential',
                                           style: TextStyle(
-                                            color: Color(0xFFA0622A),
+                                            color: AppColors.textSecondary,
                                             fontSize: 10,
                                           ),
                                         ),
@@ -531,9 +535,9 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFBF6EC),
+                                  color: AppColors.white,
                                   border: Border.all(
-                                    color: const Color(0xFFEFE2CC),
+                                    color: AppColors.paleGreen,
                                   ),
                                   borderRadius: BorderRadius.circular(14),
                                 ),
@@ -543,27 +547,28 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                     const Row(
                                       children: [
                                         Icon(
-                                          Icons.attach_money,
-                                          color: Color(0xFFA0622A),
+                                          Icons.currency_rupee,
+                                          color: AppColors.secondary,
                                           size: 14,
                                         ),
                                         SizedBox(width: 4),
                                         Text(
                                           'Consultation Fee',
                                           style: TextStyle(
-                                            color: Color(0xFFA0622A),
+                                            color: AppColors.textSecondary,
                                             fontSize: 11,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '\$${widget.fee}',
+                                      '₹${widget.fee}',
                                       style: const TextStyle(
-                                        color: Color(0xFF3B1F0A),
+                                        color: AppColors.primary,
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                   ],
@@ -575,9 +580,9 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFBF6EC),
+                                  color: AppColors.white,
                                   border: Border.all(
-                                    color: const Color(0xFFEFE2CC),
+                                    color: AppColors.paleGreen,
                                   ),
                                   borderRadius: BorderRadius.circular(14),
                                 ),
@@ -587,16 +592,18 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                     const Text(
                                       'Affiliated Hospital',
                                       style: TextStyle(
-                                        color: Color(0xFFA0622A),
+                                        color: AppColors.textSecondary,
                                         fontSize: 11,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       widget.hospital,
                                       style: const TextStyle(
-                                        color: Color(0xFF3B1F0A),
+                                        color: AppColors.textPrimary,
                                         fontSize: 13,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ],
@@ -617,9 +624,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                             width: double.infinity,
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFBF6EC),
-                              border:
-                                  Border.all(color: const Color(0xFFEFE2CC)),
+                              color: AppColors.white,
+                              border: Border.all(color: AppColors.paleGreen),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: Row(
@@ -628,12 +634,12 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                   width: 44,
                                   height: 44,
                                   decoration: const BoxDecoration(
-                                    color: Color(0xFF3B1F0A),
+                                    color: AppColors.primary,
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(
                                     Icons.play_arrow,
-                                    color: Color(0xFFFBF6EC),
+                                    color: Colors.white,
                                     size: 28,
                                   ),
                                 ),
@@ -645,10 +651,10 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                     children: [
                                       Text(
                                         _text(_videoUrl).isEmpty
-                                            ? 'No YouTube introduction link added'
-                                            : "Doctor's YouTube introduction",
+                                            ? 'No video introduction link added'
+                                            : "Doctor's introduction video",
                                         style: const TextStyle(
-                                          color: Color(0xFF6B3A1F),
+                                          color: AppColors.textPrimary,
                                           fontSize: 13,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -658,7 +664,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                         Text(
                                           _text(_videoUrl),
                                           style: const TextStyle(
-                                            color: Color(0xFFA0622A),
+                                            color: AppColors.secondary,
                                             fontSize: 12,
                                           ),
                                           maxLines: 1,
@@ -672,7 +678,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                   const SizedBox(width: 8),
                                   const Icon(
                                     Icons.open_in_new,
-                                    color: Color(0xFFA0622A),
+                                    color: AppColors.secondary,
                                     size: 18,
                                   ),
                                 ],
@@ -688,16 +694,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                           children: [
                             Icon(
                               Icons.calendar_month,
-                              color: Color(0xFF3B1F0A),
+                              color: AppColors.primary,
                               size: 16,
                             ),
                             SizedBox(width: 8),
                             Text(
                               'Practice Hours',
                               style: TextStyle(
-                                color: Color(0xFF3B1F0A),
+                                color: AppColors.textPrimary,
                                 fontSize: 15,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -705,8 +711,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                         const SizedBox(height: 12),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFBF6EC),
-                            border: Border.all(color: const Color(0xFFEFE2CC)),
+                            color: AppColors.white,
+                            border: Border.all(color: AppColors.paleGreen),
                             borderRadius: BorderRadius.circular(18),
                           ),
                           child: Column(
@@ -725,7 +731,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                       ? null
                                       : const Border(
                                           bottom: BorderSide(
-                                            color: Color(0xFFEFE2CC),
+                                            color: AppColors.paleGreen,
                                           ),
                                         ),
                                 ),
@@ -740,8 +746,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                           height: 8,
                                           decoration: BoxDecoration(
                                             color: available
-                                                ? Colors.green
-                                                : Colors.red.shade400,
+                                                ? AppColors.success
+                                                : AppColors.error,
                                             shape: BoxShape.circle,
                                           ),
                                         ),
@@ -750,8 +756,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                           item['day'] as String,
                                           style: TextStyle(
                                             color: isWeekday
-                                                ? const Color(0xFF3B1F0A)
-                                                : const Color(0xFF6B3A1F),
+                                                ? AppColors.textPrimary
+                                                : AppColors.textSecondary,
                                             fontSize: 13,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -763,14 +769,14 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                         children: [
                                           const Icon(
                                             Icons.access_time,
-                                            color: Color(0xFFA0622A),
+                                            color: AppColors.secondary,
                                             size: 14,
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
                                             item['time'] as String,
                                             style: const TextStyle(
-                                              color: Color(0xFF3B1F0A),
+                                              color: AppColors.textPrimary,
                                               fontSize: 13,
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -781,7 +787,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                       const Text(
                                         'Leave',
                                         style: TextStyle(
-                                          color: Colors.redAccent,
+                                          color: AppColors.error,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -798,7 +804,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                           child: Text(
                             '* Timings may vary on holidays. Confirm at the time of booking.',
                             style: TextStyle(
-                              color: Color(0xFFA0622A),
+                              color: AppColors.textSecondary,
                               fontSize: 11,
                             ),
                           ),
@@ -819,8 +825,15 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: Color(0xFFFFFDF8),
-                border: Border(top: BorderSide(color: Color(0xFFEFE2CC))),
+                color: AppColors.white,
+                border: Border(top: BorderSide(color: AppColors.paleGreen)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(0, -2),
+                  ),
+                ],
               ),
               child: ElevatedButton.icon(
                 onPressed: () {
@@ -839,8 +852,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B1F0A),
-                  foregroundColor: const Color(0xFFFBF6EC),
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),

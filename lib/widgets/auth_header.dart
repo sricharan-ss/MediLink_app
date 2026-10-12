@@ -16,13 +16,14 @@ class AuthHeader extends StatelessWidget {
     return Container(
       width: double.infinity,
       // height: MediaQuery.of(context).size.height * 0.28, // Removed fixed height to allow for py-12 (approx 48)
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48), // py-12 is 48px
+      padding: const EdgeInsets.symmetric(
+          horizontal: 24, vertical: 48), // py-12 is 48px
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.primary,   // #2C6975
+            AppColors.primary, // #2C6975
             AppColors.secondary, // #68B2A0
           ],
         ),

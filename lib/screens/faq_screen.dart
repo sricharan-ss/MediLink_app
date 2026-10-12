@@ -119,8 +119,12 @@ class _FAQScreenState extends State<FAQScreen> {
                         ),
                         const SizedBox(width: 8),
                         Icon(
-                          expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                          color: expanded ? AppColors.primary : AppColors.secondary,
+                          expanded
+                              ? Icons.keyboard_arrow_up
+                              : Icons.keyboard_arrow_down,
+                          color: expanded
+                              ? AppColors.primary
+                              : AppColors.secondary,
                         ),
                       ],
                     ),

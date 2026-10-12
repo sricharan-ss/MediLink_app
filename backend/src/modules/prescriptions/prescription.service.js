@@ -15,17 +15,7 @@ export async function createPrescription(data) {
         throw new AppError('Prescription already exists for this encounter', 409);
     }
     
-    const notification = {
-        userId: await userRepo.getUserIdByDoctorId(encounter.doctorId),
-        title: 'Prescription Created',
-        message: `New prescription created for encounter ${data.encounterId}`,
-        type: 'PRESCRIPTION_CREATED',
-        relatedId: data.encounterId,
-        isRead: false
-    };
-    await notificationRepo.createNotification(notification);
-
-    return await prescriptionRepository.createPrescriptionWithDiagnosis(
+    const newPrescription = await prescriptionRepository.createPrescriptionWithDiagnosis(
         {
             encounterId: data.encounterId,
             nextVisit: data.nextVisit,
@@ -36,8 +26,27 @@ export async function createPrescription(data) {
             symptoms: data.symptoms,
             allergiesNoted: data.allergiesNoted,
             severity: data.severity
-        }
+        },
+        data.medicines || []
     );
+
+    try {
+        const patientUserId = await userRepo.getUserIdByPatientId(encounter.patientId);
+        if (patientUserId) {
+            await notificationRepo.createNotificationSafely({
+                userId: patientUserId,
+                title: 'Prescription Issued',
+                message: `A new prescription has been issued for your consultation.`,
+                type: 'PRESCRIPTION',
+                relatedId: newPrescription.prescriptionId,
+                isRead: false
+            });
+        }
+    } catch (notifErr) {
+        console.error('Failed to notify patient about prescription:', notifErr.message);
+    }
+
+    return newPrescription;
 }
 
 export async function updatePrescription(prescriptionId, data) {

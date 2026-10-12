@@ -15,8 +15,7 @@ class OTPVerificationScreen extends StatefulWidget {
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   final List<TextEditingController> _controllers =
       List.generate(6, (index) => TextEditingController());
-  final List<FocusNode> _focusNodes =
-      List.generate(6, (index) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
   String _phoneNumber = "";
   bool _isValid = false;
   bool _isLoading = false;
@@ -104,7 +103,13 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
     if (result.success) {
       if (_isLogin) {
-        Navigator.pushNamedAndRemoveUntil(context, '/main-app', (route) => false);
+        if (SessionStore.isDoctor) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/doctor-dashboard', (route) => false);
+        } else {
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/main-app', (route) => false);
+        }
       } else {
         Navigator.pushNamed(context, '/profile-setup');
       }
@@ -231,7 +236,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     Text(
                       _statusMessage!,
                       style: TextStyle(
-                        color: _statusIsError ? AppColors.error : AppColors.success,
+                        color: _statusIsError
+                            ? AppColors.error
+                            : AppColors.success,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -272,9 +279,11 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     child: ElevatedButton(
                       onPressed: _isValid && !_isLoading ? _verifyOTP : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _isValid ? AppColors.primary : AppColors.primary.withValues(alpha: 0.4),
-                        disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
+                        backgroundColor: _isValid
+                            ? AppColors.primary
+                            : AppColors.primary.withValues(alpha: 0.4),
+                        disabledBackgroundColor:
+                            AppColors.primary.withValues(alpha: 0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -282,7 +291,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       ),
                       child: _isLoading
                           ? const CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             )
                           : const Text(
                               'Submit',

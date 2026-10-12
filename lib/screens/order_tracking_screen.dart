@@ -113,8 +113,9 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     return value
         .toLowerCase()
         .split('_')
-        .map((part) =>
-            part.isEmpty ? part : '${part[0].toUpperCase()}${part.substring(1)}')
+        .map((part) => part.isEmpty
+            ? part
+            : '${part[0].toUpperCase()}${part.substring(1)}')
         .join(' ');
   }
 
@@ -265,7 +266,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                         color: isCompleted
                                             ? stepColor
                                             : (isActive
-                                                ? stepColor.withValues(alpha: 0.2)
+                                                ? stepColor.withValues(
+                                                    alpha: 0.2)
                                                 : AppColors.surfaceSage),
                                         border: isActive
                                             ? Border.all(

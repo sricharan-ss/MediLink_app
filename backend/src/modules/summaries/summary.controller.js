@@ -1,4 +1,15 @@
 import * as summaryService from './summary.service.js';
+import { createSummarySchema } from './summary.validator.js';
+
+export const create = async (req, res, next) => {
+  try {
+    const validatedData = createSummarySchema.parse(req.body);
+    const summary = await summaryService.createSummary(validatedData);
+    res.status(201).json(summary);
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const getById = async (req, res, next) => {
   try {

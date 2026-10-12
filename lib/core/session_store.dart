@@ -20,6 +20,9 @@ class SessionStore {
   static const String _keyBloodGroup = 'medilink_blood_group';
   static const String _keyChronicConditions = 'medilink_chronic_conditions';
   static const String _keyFavoriteDoctorIds = 'medilink_favorite_doctor_ids';
+  static const String _keyDoctorId = 'medilink_doctor_id';
+  static const String _keyDoctorSpecialization =
+      'medilink_doctor_specialization';
 
   static String phoneNumber = '+910000000000';
   static String firstName = '';
@@ -32,15 +35,21 @@ class SessionStore {
   static List<String> chronicConditions = <String>[];
   static List<String> favoriteDoctorIds = <String>[];
   static String? patientId;
+  static String? doctorId;
+  static String? doctorSpecialization;
   static String? verificationToken;
   static String? devOtp;
   static String? accessToken;
   static AuthFlow currentAuthFlow = AuthFlow.signup;
 
-  static final Set<String> registeredPhones = <String>{};
-  static final Map<String, Map<String, dynamic>> registeredUsers = <String, Map<String, dynamic>>{};
+  static bool get isDoctor => doctorId != null && doctorId!.trim().isNotEmpty;
 
-  static bool isPhoneRegistered(String phone) => registeredPhones.contains(phone);
+  static final Set<String> registeredPhones = <String>{};
+  static final Map<String, Map<String, dynamic>> registeredUsers =
+      <String, Map<String, dynamic>>{};
+
+  static bool isPhoneRegistered(String phone) =>
+      registeredPhones.contains(phone);
 
   static void reservePhone(String phone) {
     registeredPhones.add(phone);
@@ -171,7 +180,10 @@ class SessionStore {
     final userData = registeredUsers[phoneNumber];
     final values = userData?['chronicConditions'];
     if (values is List) {
-      return values.whereType<String>().where((value) => value.trim().isNotEmpty).toList();
+      return values
+          .whereType<String>()
+          .where((value) => value.trim().isNotEmpty)
+          .toList();
     }
     return <String>[];
   }
@@ -185,7 +197,11 @@ class SessionStore {
 
   static List<String> _readStringList(dynamic value) {
     if (value is List) {
-      return value.whereType<String>().map((item) => item.trim()).where((item) => item.isNotEmpty).toList();
+      return value
+          .whereType<String>()
+          .map((item) => item.trim())
+          .where((item) => item.isNotEmpty)
+          .toList();
     }
     return <String>[];
   }
@@ -215,6 +231,8 @@ class SessionStore {
             prefs.getStringList(_keyChronicConditions) ?? <String>[];
         favoriteDoctorIds =
             prefs.getStringList(_keyFavoriteDoctorIds) ?? <String>[];
+        doctorId = prefs.getString(_keyDoctorId);
+        doctorSpecialization = prefs.getString(_keyDoctorSpecialization);
         return true;
       }
     } catch (_) {}
@@ -229,6 +247,16 @@ class SessionStore {
       }
       if (patientId != null && patientId!.isNotEmpty) {
         await prefs.setString(_keyPatientId, patientId!);
+      }
+      if (doctorId != null && doctorId!.isNotEmpty) {
+        await prefs.setString(_keyDoctorId, doctorId!);
+      } else {
+        await prefs.remove(_keyDoctorId);
+      }
+      if (doctorSpecialization != null && doctorSpecialization!.isNotEmpty) {
+        await prefs.setString(_keyDoctorSpecialization, doctorSpecialization!);
+      } else {
+        await prefs.remove(_keyDoctorSpecialization);
       }
       await prefs.setString(_keyPhoneNumber, phoneNumber);
       await prefs.setString(_keyFirstName, firstName);
@@ -260,12 +288,16 @@ class SessionStore {
     chronicConditions = <String>[];
     favoriteDoctorIds = <String>[];
     patientId = null;
+    doctorId = null;
+    doctorSpecialization = null;
     clearAuthAttempt();
 
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_keyAccessToken);
       await prefs.remove(_keyPatientId);
+      await prefs.remove(_keyDoctorId);
+      await prefs.remove(_keyDoctorSpecialization);
       await prefs.remove(_keyPhoneNumber);
       await prefs.remove(_keyFirstName);
       await prefs.remove(_keyLastName);

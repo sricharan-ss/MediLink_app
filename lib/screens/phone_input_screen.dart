@@ -30,9 +30,10 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
 
   void _checkValidity() {
     final phoneText = _phoneController.text.trim();
-    final phoneValid = phoneText.length == 10 && RegExp(r'^[0-9]+$').hasMatch(phoneText);
-    final nameValid =
-        _firstNameController.text.trim().isNotEmpty && _lastNameController.text.trim().isNotEmpty;
+    final phoneValid =
+        phoneText.length == 10 && RegExp(r'^[0-9]+$').hasMatch(phoneText);
+    final nameValid = _firstNameController.text.trim().isNotEmpty &&
+        _lastNameController.text.trim().isNotEmpty;
     final isValidValue = phoneValid && nameValid;
     if (_isValid != isValidValue) {
       setState(() {
@@ -44,7 +45,8 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
   Future<void> _validateAndSendOTP() async {
     if (!_isValid) {
       setState(() {
-        _errorMessage = 'Please fill in your name and a valid 10-digit mobile number';
+        _errorMessage =
+            'Please fill in your name and a valid 10-digit mobile number';
       });
       return;
     }
@@ -122,21 +124,26 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
                       hintText: 'Enter first name',
-                      hintStyle: const TextStyle(color: AppColors.textSecondary),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                      hintStyle:
+                          const TextStyle(color: AppColors.textSecondary),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 16),
                       filled: true,
                       fillColor: AppColors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.paleGreen),
+                        borderSide:
+                            const BorderSide(color: AppColors.paleGreen),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.paleGreen, width: 1.2),
+                        borderSide: const BorderSide(
+                            color: AppColors.paleGreen, width: 1.2),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                        borderSide: const BorderSide(
+                            color: AppColors.primary, width: 2),
                       ),
                     ),
                   ),
@@ -155,21 +162,26 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
                       hintText: 'Enter last name',
-                      hintStyle: const TextStyle(color: AppColors.textSecondary),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                      hintStyle:
+                          const TextStyle(color: AppColors.textSecondary),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 16),
                       filled: true,
                       fillColor: AppColors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.paleGreen),
+                        borderSide:
+                            const BorderSide(color: AppColors.paleGreen),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.paleGreen, width: 1.2),
+                        borderSide: const BorderSide(
+                            color: AppColors.paleGreen, width: 1.2),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                        borderSide: const BorderSide(
+                            color: AppColors.primary, width: 2),
                       ),
                     ),
                   ),
@@ -189,22 +201,27 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                     maxLength: 10,
                     decoration: InputDecoration(
                       hintText: '+91-9790939361',
-                      hintStyle: const TextStyle(color: AppColors.textSecondary),
+                      hintStyle:
+                          const TextStyle(color: AppColors.textSecondary),
                       counterText: "",
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 16),
                       filled: true,
                       fillColor: AppColors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.paleGreen),
+                        borderSide:
+                            const BorderSide(color: AppColors.paleGreen),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.paleGreen, width: 1.2),
+                        borderSide: const BorderSide(
+                            color: AppColors.paleGreen, width: 1.2),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                        borderSide: const BorderSide(
+                            color: AppColors.primary, width: 2),
                       ),
                       errorText: _errorMessage,
                     ),
@@ -213,7 +230,8 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                     const SizedBox(height: 12),
                     Text(
                       _errorMessage!,
-                      style: const TextStyle(color: AppColors.error, fontSize: 14),
+                      style:
+                          const TextStyle(color: AppColors.error, fontSize: 14),
                     ),
                   ],
                   const SizedBox(height: 28),
@@ -221,12 +239,14 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                     width: double.infinity,
                     height: 54,
                     child: ElevatedButton(
-                      onPressed: _isValid && !_isLoading ? _validateAndSendOTP : null,
+                      onPressed:
+                          _isValid && !_isLoading ? _validateAndSendOTP : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _isValid
                             ? AppColors.primary
                             : AppColors.primary.withValues(alpha: 0.4),
-                        disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
+                        disabledBackgroundColor:
+                            AppColors.primary.withValues(alpha: 0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -234,7 +254,8 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                       ),
                       child: _isLoading
                           ? const CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             )
                           : const Text(
                               'Send OTP',

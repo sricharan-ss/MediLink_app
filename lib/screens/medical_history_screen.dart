@@ -86,7 +86,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                           Navigator.pushNamed(context, '/settings'),
                       icon: const Icon(
                         Icons.settings_outlined,
-                        color: AppColors.brownDeep,
+                        color: AppColors.textPrimary,
                         size: 22,
                       ),
                     ),
@@ -108,7 +108,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                     _errorMessage!,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: AppColors.brownMid,
+                      color: AppColors.textSecondary,
                       fontSize: 12,
                     ),
                   ),
@@ -190,34 +190,73 @@ class PrescriptionsScreen extends StatelessWidget {
               encounter is Map<String, dynamic> ? encounter['doctor'] : null;
           final hospital =
               encounter is Map<String, dynamic> ? encounter['hospital'] : null;
+
+          String doctorTitle = 'Prescription';
+          if (doctor is Map) {
+            if (doctor['user'] is Map) {
+              final fn = doctor['user']['firstName'] ?? '';
+              final ln = doctor['user']['lastName'] ?? '';
+              doctorTitle = 'Dr. $fn $ln'.trim();
+            } else if (doctor['name'] != null) {
+              doctorTitle = doctor['name'].toString();
+            }
+          }
+
+          String? diagnosisText;
+          if (encounter is Map) {
+            if (encounter['diagnosis'] != null &&
+                encounter['diagnosis'].toString().trim().isNotEmpty) {
+              diagnosisText = encounter['diagnosis'].toString().trim();
+            } else if (encounter['diagnoses'] is List &&
+                (encounter['diagnoses'] as List).isNotEmpty) {
+              final firstDiag = (encounter['diagnoses'] as List).first;
+              if (firstDiag is Map && firstDiag['diagnosisText'] != null) {
+                diagnosisText = firstDiag['diagnosisText'].toString().trim();
+              }
+            }
+          }
+
+          final nextVisit = item['nextVisit'];
           final medicines = ((item['medicines'] as List?) ?? const [])
               .whereType<Map>()
               .map((entry) => entry.map((k, v) => MapEntry(k.toString(), v)))
               .toList();
+
           return _HistoryRecord(
-            primary: _nestedString(doctor, 'name', 'Prescription'),
-            secondary: medicines.isEmpty
-                ? 'No medicine lines recorded'
-                : '${medicines.length} medicine(s) prescribed',
-            source: _nestedString(hospital, 'name', 'MediLink'),
+            primary: doctorTitle,
+            secondary: diagnosisText != null && diagnosisText.isNotEmpty
+                ? 'Diagnosis: $diagnosisText'
+                : (medicines.isEmpty
+                    ? 'Consultation prescription'
+                    : '${medicines.length} medicine(s) prescribed'),
+            source: _nestedString(hospital, 'name', 'MediLink Hospital'),
             date: _formatDate(
               item['generatedAt'] ??
                   (encounter is Map ? encounter['scheduledTime'] : null),
             ),
             pdfUrl: item['pdfUrl']?.toString(),
-            details: medicines
-                .map(
-                  (medicine) => [
-                    _text(medicine['name'], 'Medicine'),
-                    if (_text(medicine['dosage']).isNotEmpty)
-                      _text(medicine['dosage']),
-                    if (_text(medicine['frequency']).isNotEmpty)
-                      _text(medicine['frequency']),
-                    if (medicine['durationDays'] != null)
-                      '${medicine['durationDays']} day(s)',
-                  ].join(' • ')
-                )
-                .toList(),
+            details: [
+              if (diagnosisText != null && diagnosisText.isNotEmpty)
+                'Diagnosis: $diagnosisText',
+              ...medicines.map((med) {
+                final medName =
+                    (med['medicine'] is Map ? med['medicine']['name'] : null) ??
+                        med['name'] ??
+                        'Medicine';
+                final parts = <String>[medName.toString()];
+                if (_text(med['dosage']).isNotEmpty)
+                  parts.add(_text(med['dosage']));
+                if (_text(med['frequency']).isNotEmpty) {
+                  parts.add(_text(med['frequency']));
+                }
+                if (med['durationDays'] != null) {
+                  parts.add('${med['durationDays']} day(s)');
+                }
+                return parts.join(' • ');
+              }),
+              if (nextVisit != null)
+                'Next Visit / Follow-up: ${_formatDate(nextVisit)}',
+            ],
           );
         }).toList();
       },
@@ -239,22 +278,33 @@ class LabReportsScreen extends StatelessWidget {
           final encounter = item['encounter'];
           final hospital =
               encounter is Map<String, dynamic> ? encounter['hospital'] : null;
+          final labTest =
+              item['labTest'] is Map<String, dynamic> ? item['labTest'] : null;
+          final testTitle = labTest?['testName']?.toString() ??
+              item['testName']?.toString() ??
+              'Lab Test';
+          final unit = labTest?['unit'] != null ? ' ${labTest!['unit']}' : '';
+          final normalRange = labTest?['normalRange']?.toString();
           final resultValue = _text(item['resultValue']);
           final remarks = _text(item['remarks']);
           final isAbnormal = item['isAbnormal'] == true;
+
           return _HistoryRecord(
-            primary: item['testName']?.toString() ?? 'Lab report',
+            primary: testTitle,
             secondary: resultValue.isNotEmpty
-                ? 'Result: $resultValue'
-                : (remarks.isNotEmpty ? remarks : 'Uploaded'),
+                ? 'Result: $resultValue$unit${isAbnormal ? ' (Abnormal)' : ''}'
+                : (remarks.isNotEmpty ? remarks : 'Report recorded'),
             source: _nestedString(hospital, 'name', 'MediLink Clinical Lab'),
-            date: _formatDate(item['reportedAt']),
+            date: _formatDate(item['reportedAt'] ?? item['createdAt']),
             pdfUrl: item['pdfUrl']?.toString(),
             details: [
-              if (resultValue.isNotEmpty) 'Parameter: ${_text(item['testName'])}',
-              if (resultValue.isNotEmpty) 'Value: $resultValue',
+              if (resultValue.isNotEmpty) 'Value: $resultValue$unit',
+              if (normalRange != null && normalRange.isNotEmpty)
+                'Normal Range: $normalRange',
+              if (isAbnormal) 'Flag: Abnormal Result',
               if (remarks.isNotEmpty) 'Remarks: $remarks',
-              if (isAbnormal) 'Flag: Abnormal',
+              if (_text(item['actionsTaken']).isNotEmpty)
+                'Actions Taken: ${_text(item['actionsTaken'])}',
             ],
           );
         }).toList();
@@ -267,7 +317,8 @@ class AppointmentHistoryScreen extends StatefulWidget {
   const AppointmentHistoryScreen({super.key});
 
   @override
-  State<AppointmentHistoryScreen> createState() => _AppointmentHistoryScreenState();
+  State<AppointmentHistoryScreen> createState() =>
+      _AppointmentHistoryScreenState();
 }
 
 class _AppointmentHistoryScreenState extends State<AppointmentHistoryScreen> {
@@ -370,7 +421,7 @@ class _HistoryRecordsPageState extends State<_HistoryRecordsPage> {
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [AppColors.brownDeep, AppColors.brownMid],
+              colors: [AppColors.primary, AppColors.secondary],
             ),
           ),
         ),
@@ -383,10 +434,10 @@ class _HistoryRecordsPageState extends State<_HistoryRecordsPage> {
               onChanged: (value) => setState(() => _query = value),
               decoration: InputDecoration(
                 hintText: widget.searchHint,
-                hintStyle: const TextStyle(color: AppColors.brownLight),
+                hintStyle: const TextStyle(color: AppColors.textSecondary),
                 prefixIcon: const Icon(
                   Icons.search,
-                  color: AppColors.brownLight,
+                  color: AppColors.secondary,
                   size: 20,
                 ),
                 filled: true,
@@ -397,7 +448,7 @@ class _HistoryRecordsPageState extends State<_HistoryRecordsPage> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
-                  borderSide: const BorderSide(color: AppColors.brownLight),
+                  borderSide: const BorderSide(color: AppColors.paleGreen),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
@@ -482,14 +533,15 @@ class _HistoryMessage extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.brownMid, fontSize: 13),
+              style:
+                  const TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: onRetry,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.brownDeep,
+                  backgroundColor: AppColors.primary,
                 ),
                 child: const Text(
                   'Retry',
@@ -570,7 +622,7 @@ class _HistoryCategoryCard extends StatelessWidget {
                   color: AppColors.surface,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: AppColors.brownMid, size: 22),
+                child: Icon(icon, color: AppColors.textSecondary, size: 22),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -580,7 +632,7 @@ class _HistoryCategoryCard extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        color: AppColors.brownDeep,
+                        color: AppColors.textPrimary,
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
@@ -591,14 +643,14 @@ class _HistoryCategoryCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: const TextStyle(
-                        color: AppColors.brownMid,
+                        color: AppColors.textSecondary,
                         fontSize: 12,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.brownLight),
+              const Icon(Icons.chevron_right, color: AppColors.secondary),
             ],
           ),
         ),
@@ -627,14 +679,14 @@ class _HistoryRecordCard extends StatelessWidget {
         title: Text(
           record.primary,
           style: const TextStyle(
-            color: AppColors.brownDeep,
+            color: AppColors.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
           ),
         ),
         content: SelectableText(
           pdfUrl,
-          style: const TextStyle(color: AppColors.brownMid, fontSize: 13),
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
         ),
         actions: [
           TextButton(
@@ -653,7 +705,7 @@ class _HistoryRecordCard extends StatelessWidget {
             icon: const Icon(Icons.copy, size: 16),
             label: const Text('Copy Link'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.brownDeep,
+              backgroundColor: AppColors.primary,
               foregroundColor: AppColors.cream,
             ),
           ),
@@ -688,7 +740,7 @@ class _HistoryRecordCard extends StatelessWidget {
                     child: Text(
                       record.primary,
                       style: const TextStyle(
-                        color: AppColors.brownDeep,
+                        color: AppColors.textPrimary,
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
@@ -713,7 +765,8 @@ class _HistoryRecordCard extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 record.secondary,
-                style: const TextStyle(color: AppColors.brownMid, fontSize: 13),
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 13),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -725,7 +778,7 @@ class _HistoryRecordCard extends StatelessWidget {
                     child: Text(
                       detail,
                       style: const TextStyle(
-                        color: AppColors.brownMid,
+                        color: AppColors.textSecondary,
                         fontSize: 12,
                       ),
                       maxLines: 2,
@@ -737,7 +790,8 @@ class _HistoryRecordCard extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 record.source,
-                style: const TextStyle(color: AppColors.brownLight, fontSize: 12),
+                style:
+                    const TextStyle(color: AppColors.secondary, fontSize: 12),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -748,7 +802,7 @@ class _HistoryRecordCard extends StatelessWidget {
                     child: Text(
                       record.date,
                       style: const TextStyle(
-                        color: AppColors.brownLight,
+                        color: AppColors.secondary,
                         fontSize: 12,
                       ),
                       maxLines: 1,

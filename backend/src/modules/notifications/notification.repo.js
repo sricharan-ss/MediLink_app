@@ -41,6 +41,22 @@ export async function getNotificationById(notificationId) {
     })
 }
 
+export async function createNotificationSafely(data) {
+    if (!data || !data.userId) return null;
+    const existing = await prisma.notification.findFirst({
+        where: {
+            userId: data.userId,
+            type: data.type,
+            title: data.title,
+            relatedId: data.relatedId || null
+        }
+    });
+    if (existing) {
+        return existing;
+    }
+    return await createNotification(data);
+}
+
 export async function getNotifications(filters = {}) {
     const where = {};
 
@@ -64,6 +80,9 @@ export async function getNotifications(filters = {}) {
         where.title = filters.title;
     }
 
-    return await prisma.notification.findMany({ where });
+    return await prisma.notification.findMany({
+        where,
+        orderBy: { createdAt: 'desc' }
+    });
 }
 

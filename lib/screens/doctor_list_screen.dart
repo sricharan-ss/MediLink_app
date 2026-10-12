@@ -146,7 +146,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [AppColors.brownDeep, AppColors.brownMid],
+              colors: [AppColors.primary, AppColors.secondary],
             ),
           ),
         ),
@@ -166,7 +166,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                           child: Container(
                             height: 44,
                             decoration: BoxDecoration(
-                              color: AppColors.cream,
+                              color: AppColors.paleGreen,
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(color: AppColors.surface),
                             ),
@@ -175,7 +175,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               children: [
                                 const Icon(
                                   Icons.search,
-                                  color: AppColors.brownMid,
+                                  color: AppColors.textSecondary,
                                   size: 18,
                                 ),
                                 const SizedBox(width: 8),
@@ -184,7 +184,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                     controller: _searchController,
                                     onChanged: (_) => setState(() {}),
                                     style: const TextStyle(
-                                      color: AppColors.brownDeep,
+                                      color: AppColors.textPrimary,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -213,7 +213,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: AppColors.cream,
+                              color: AppColors.paleGreen,
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
                                 color: _selectedSpecialties.isNotEmpty
@@ -228,7 +228,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                     Icons.tune,
                                     color: _selectedSpecialties.isNotEmpty
                                         ? AppColors.accent
-                                        : AppColors.brownMid,
+                                        : AppColors.textSecondary,
                                     size: 20,
                                   ),
                                 ),
@@ -280,7 +280,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                       child: Text(
                         '${filtered.length} doctor${filtered.length != 1 ? 's' : ''} found',
                         style: const TextStyle(
-                          color: AppColors.brownLight,
+                          color: AppColors.secondary,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -300,61 +300,64 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                         ),
                       )
                     : _errorMessage != null
-                    ? _LoadError(message: _errorMessage!, onRetry: _loadDoctors)
-                    : filtered.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'No doctors found',
-                              style: TextStyle(
-                                color: AppColors.brownMid,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            GestureDetector(
-                              onTap: () {
-                                _searchController.clear();
-                                setState(() => _selectedSpecialties.clear());
-                              },
-                              child: const Text(
-                                'Clear filters',
-                                style: TextStyle(
-                                  color: AppColors.accent,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: AppColors.accent,
+                        ? _LoadError(
+                            message: _errorMessage!, onRetry: _loadDoctors)
+                        : filtered.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'No doctors found',
+                                      style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _searchController.clear();
+                                        setState(
+                                            () => _selectedSpecialties.clear());
+                                      },
+                                      child: const Text(
+                                        'Clear filters',
+                                        style: TextStyle(
+                                          color: AppColors.accent,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          decoration: TextDecoration.underline,
+                                          decorationColor: AppColors.accent,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                              )
+                            : ListView.builder(
+                                padding:
+                                    const EdgeInsets.fromLTRB(14, 0, 14, 16),
+                                itemCount: filtered.length,
+                                itemBuilder: (context, i) {
+                                  final d = filtered[i];
+                                  return _DoctorCard(
+                                    id: d.id,
+                                    name: d.name,
+                                    specialty: d.specialty,
+                                    hospitalId: d.hospitalId,
+                                    hospital: d.hospitalName,
+                                    rating: d.rating,
+                                    reviewCount: d.reviewCount,
+                                    totalPatients: d.totalPatients,
+                                    experience: d.experience,
+                                    fee: d.fee,
+                                    videoUrl: d.videoUrl,
+                                    aiPick: i < 2,
+                                  );
+                                },
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
-                        itemCount: filtered.length,
-                        itemBuilder: (context, i) {
-                          final d = filtered[i];
-                          return _DoctorCard(
-                            id: d.id,
-                            name: d.name,
-                            specialty: d.specialty,
-                            hospitalId: d.hospitalId,
-                            hospital: d.hospitalName,
-                            rating: d.rating,
-                            reviewCount: d.reviewCount,
-                            totalPatients: d.totalPatients,
-                            experience: d.experience,
-                            fee: d.fee,
-                            videoUrl: d.videoUrl,
-                            aiPick: i < 2,
-                          );
-                        },
-                      ),
               ),
             ],
           ),
@@ -373,16 +376,16 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.brownDeep : AppColors.cream,
+          color: isActive ? AppColors.primary : AppColors.paleGreen,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isActive ? AppColors.brownDeep : AppColors.surface,
+            color: isActive ? AppColors.primary : AppColors.surface,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isActive ? AppColors.cream : AppColors.brownMid,
+            color: isActive ? AppColors.white : AppColors.textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -420,7 +423,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                         const Text(
                           'Filter by Specialty',
                           style: TextStyle(
-                            color: AppColors.brownDeep,
+                            color: AppColors.textPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Playfair Display',
@@ -429,7 +432,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                         IconButton(
                           icon: const Icon(
                             Icons.close,
-                            color: AppColors.brownMid,
+                            color: AppColors.textSecondary,
                             size: 22,
                           ),
                           onPressed: () => setState(() => _showFilter = false),
@@ -458,7 +461,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               decoration: BoxDecoration(
                                 color: isSelected
                                     ? AppColors.accent
-                                    : AppColors.cream,
+                                    : AppColors.paleGreen,
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
                                   color: isSelected
@@ -471,7 +474,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                 style: TextStyle(
                                   color: isSelected
                                       ? Colors.white
-                                      : AppColors.brownMid,
+                                      : AppColors.textSecondary,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -497,7 +500,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                             child: Container(
                               height: 48,
                               decoration: BoxDecoration(
-                                color: AppColors.cream,
+                                color: AppColors.paleGreen,
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(color: AppColors.surface),
                               ),
@@ -505,7 +508,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               child: const Text(
                                 'Clear',
                                 style: TextStyle(
-                                  color: AppColors.brownMid,
+                                  color: AppColors.textSecondary,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -638,7 +641,7 @@ class _DoctorCardState extends State<_DoctorCard> {
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: AppColors.cream,
+            color: AppColors.paleGreen,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.surface),
           ),
@@ -659,7 +662,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                     child: Text(
                       widget.name.length > 3 ? widget.name[3] : 'D',
                       style: const TextStyle(
-                        color: AppColors.cream,
+                        color: AppColors.paleGreen,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Playfair Display',
@@ -677,7 +680,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                               child: Text(
                                 widget.name,
                                 style: const TextStyle(
-                                  color: AppColors.brownDeep,
+                                  color: AppColors.textPrimary,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Playfair Display',
@@ -743,7 +746,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                                           : Icons.favorite_border,
                                       color: isFav
                                           ? const Color(0xFFD9534F)
-                                          : AppColors.brownLight,
+                                          : AppColors.secondary,
                                     ),
                               tooltip: isFav
                                   ? 'Remove from Favorites'
@@ -757,7 +760,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                         Text(
                           widget.specialty,
                           style: const TextStyle(
-                            color: AppColors.brownMid,
+                            color: AppColors.textSecondary,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -766,7 +769,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                         Text(
                           widget.hospital,
                           style: const TextStyle(
-                            color: AppColors.brownLight,
+                            color: AppColors.secondary,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
                           ),
@@ -779,7 +782,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                             Text(
                               '${widget.rating.toStringAsFixed(1)} rating',
                               style: const TextStyle(
-                                color: AppColors.brownLight,
+                                color: AppColors.secondary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -787,7 +790,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                             Text(
                               '${widget.reviewCount} reviews',
                               style: const TextStyle(
-                                color: AppColors.brownLight,
+                                color: AppColors.secondary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -795,7 +798,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                             Text(
                               '${widget.totalPatients}+ patients',
                               style: const TextStyle(
-                                color: AppColors.brownLight,
+                                color: AppColors.secondary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -803,7 +806,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                             Text(
                               '${widget.experience}y exp',
                               style: const TextStyle(
-                                color: AppColors.brownLight,
+                                color: AppColors.secondary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -834,7 +837,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                           TextSpan(
                             text: '\$${widget.fee} ',
                             style: const TextStyle(
-                              color: AppColors.brownDeep,
+                              color: AppColors.textPrimary,
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
                             ),
@@ -842,7 +845,7 @@ class _DoctorCardState extends State<_DoctorCard> {
                           const TextSpan(
                             text: '/ visit',
                             style: TextStyle(
-                              color: AppColors.brownLight,
+                              color: AppColors.secondary,
                               fontSize: 11,
                               fontWeight: FontWeight.w400,
                             ),
@@ -856,13 +859,13 @@ class _DoctorCardState extends State<_DoctorCard> {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.brownDeep,
+                        color: AppColors.textPrimary,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Text(
                         'Book Now',
                         style: TextStyle(
-                          color: AppColors.cream,
+                          color: AppColors.paleGreen,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -896,13 +899,14 @@ class _LoadError extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.brownMid, fontSize: 13),
+              style:
+                  const TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.brownDeep,
+                backgroundColor: AppColors.primary,
               ),
               child: const Text(
                 'Retry',

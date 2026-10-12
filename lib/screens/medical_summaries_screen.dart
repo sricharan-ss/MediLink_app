@@ -63,8 +63,18 @@ class _MedicalSummariesScreenState extends State<MedicalSummariesScreen> {
   String _formatDate(DateTime? date) {
     if (date == null) return 'Date not specified';
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
@@ -241,7 +251,7 @@ class _MedicalSummariesScreenState extends State<MedicalSummariesScreen> {
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [AppColors.brownDeep, AppColors.brownMid],
+              colors: [AppColors.primary, AppColors.secondary],
             ),
           ),
         ),
@@ -261,8 +271,10 @@ class _MedicalSummariesScreenState extends State<MedicalSummariesScreen> {
                 onChanged: (val) => setState(() => _searchQuery = val),
                 decoration: const InputDecoration(
                   hintText: 'Search summaries...',
-                  hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 13),
-                  prefixIcon: Icon(Icons.search, color: AppColors.textSecondary, size: 20),
+                  hintStyle:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  prefixIcon: Icon(Icons.search,
+                      color: AppColors.textSecondary, size: 20),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(vertical: 12),
                 ),
@@ -299,7 +311,8 @@ class _MedicalSummariesScreenState extends State<MedicalSummariesScreen> {
               Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                style:
+                    const TextStyle(color: AppColors.textPrimary, fontSize: 14),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -407,7 +420,8 @@ class _MedicalSummariesScreenState extends State<MedicalSummariesScreen> {
                         ),
                         if ((summary.riskFactors ?? '').isNotEmpty)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
                               color: const Color(0xFFFFF3CD),
                               borderRadius: BorderRadius.circular(8),

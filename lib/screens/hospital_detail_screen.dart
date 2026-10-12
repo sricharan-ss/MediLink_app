@@ -68,14 +68,14 @@ class _HospitalDetailScreenState extends State<HospitalDetailScreen> {
     final title = _hospital?.name ?? widget.hospitalName;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFDF8),
+      backgroundColor: AppColors.background,
       body: Column(
         children: [
           _Header(title: title),
           Expanded(
             child: _isLoading
                 ? const Center(
-                    child: CircularProgressIndicator(color: AppColors.accent))
+                    child: CircularProgressIndicator(color: AppColors.primary))
                 : _errorMessage != null
                     ? _ErrorState(
                         message: _errorMessage!, onRetry: _loadHospital)
@@ -99,7 +99,7 @@ class _Header extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [AppColors.brownDeep, AppColors.brownMid],
+          colors: [AppColors.primary, AppColors.secondary],
         ),
       ),
       child: SafeArea(
@@ -160,8 +160,8 @@ class _HospitalBody extends StatelessWidget {
                 const SizedBox(height: 12),
                 hospital.tags.isEmpty
                     ? const Text('No specialties listed yet.',
-                        style:
-                            TextStyle(color: Color(0xFF6B3A1F), fontSize: 13))
+                        style: TextStyle(
+                            color: AppColors.textSecondary, fontSize: 13))
                     : Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -212,7 +212,7 @@ class _Cover extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF3B1F0A), Color(0xFF6B3A1F)],
+          colors: [AppColors.primary, AppColors.secondary],
         ),
       ),
       child: Stack(
@@ -221,12 +221,12 @@ class _Cover extends StatelessWidget {
           const Positioned(
             top: 16,
             left: 32,
-            child: _OutlineCircle(size: 80, opacity: 0.1),
+            child: _OutlineCircle(size: 80, opacity: 0.15),
           ),
           const Positioned(
             bottom: 16,
             right: 32,
-            child: _OutlineCircle(size: 128, opacity: 0.1),
+            child: _OutlineCircle(size: 128, opacity: 0.15),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -238,15 +238,13 @@ class _Cover extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.2),
                     shape: BoxShape.circle),
                 child: const Center(
-                    child:
-                        Icon(Icons.domain, color: Color(0xFFFBF6EC), size: 28)),
+                    child: Icon(Icons.domain, color: Colors.white, size: 28)),
               ),
               const SizedBox(height: 8),
               Text(
                 '${hospital.city} - ${hospital.doctorCount} doctors',
                 style: TextStyle(
-                    color: const Color(0xFFFBF6EC).withValues(alpha: 0.85),
-                    fontSize: 12),
+                    color: Colors.white.withValues(alpha: 0.9), fontSize: 12),
               ),
             ],
           ),
@@ -295,10 +293,9 @@ class _HospitalSummary extends StatelessWidget {
             Text(
               hospital.name,
               style: const TextStyle(
-                color: Color(0xFF3B1F0A),
+                color: AppColors.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                fontFamily: 'Playfair Display',
               ),
             ),
             Container(
@@ -346,13 +343,13 @@ class _InfoLine extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 2),
-          child: Icon(icon, color: const Color(0xFFA0622A), size: 16),
+          child: Icon(icon, color: AppColors.secondary, size: 16),
         ),
         const SizedBox(width: 8),
         Expanded(
             child: Text(text,
-                style:
-                    const TextStyle(color: Color(0xFF6B3A1F), fontSize: 13))),
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 13))),
       ],
     );
   }
@@ -367,9 +364,9 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(text,
         style: const TextStyle(
-            color: Color(0xFF3B1F0A),
+            color: AppColors.textPrimary,
             fontSize: 15,
-            fontWeight: FontWeight.w500));
+            fontWeight: FontWeight.w600));
   }
 }
 
@@ -383,12 +380,15 @@ class _SpecialtyChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFFBF6EC),
-        border: Border.all(color: const Color(0xFFEFE2CC)),
+        color: AppColors.paleGreen,
+        border: Border.all(color: AppColors.sage),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(label,
-          style: const TextStyle(color: Color(0xFF6B3A1F), fontSize: 12)),
+          style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 12,
+              fontWeight: FontWeight.w500)),
     );
   }
 }
@@ -405,19 +405,19 @@ class _LabCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFBF6EC),
-        border: Border.all(color: const Color(0xFFEFE2CC)),
+        color: AppColors.white,
+        border: Border.all(color: AppColors.paleGreen),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: [
           const Icon(Icons.biotech_outlined,
-              color: Color(0xFFA0622A), size: 20),
+              color: AppColors.secondary, size: 20),
           const SizedBox(width: 10),
           Expanded(
               child: Text(lab.name,
                   style: const TextStyle(
-                      color: Color(0xFF3B1F0A),
+                      color: AppColors.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w500))),
         ],
@@ -437,9 +437,16 @@ class _DoctorCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFBF6EC),
-        border: Border.all(color: const Color(0xFFEFE2CC)),
+        color: AppColors.white,
+        border: Border.all(color: AppColors.paleGreen),
         borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -469,10 +476,10 @@ class _DoctorCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 24,
-                  backgroundColor: const Color(0xFFD4822A),
+                  backgroundColor: AppColors.secondary,
                   child: Text(_avatarLetter(doctor.name),
                       style: const TextStyle(
-                          color: Color(0xFFFBF6EC),
+                          color: AppColors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600)),
                 ),
@@ -483,14 +490,15 @@ class _DoctorCard extends StatelessWidget {
                     children: [
                       Text(doctor.name,
                           style: const TextStyle(
-                              color: Color(0xFF3B1F0A),
+                              color: AppColors.textPrimary,
                               fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Playfair Display')),
+                              fontWeight: FontWeight.w600)),
                       const SizedBox(height: 2),
                       Text(doctor.specialty,
                           style: const TextStyle(
-                              color: Color(0xFF6B3A1F), fontSize: 12)),
+                              color: AppColors.secondary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500)),
                       const SizedBox(height: 4),
                       Wrap(
                         spacing: 12,
@@ -498,12 +506,13 @@ class _DoctorCard extends StatelessWidget {
                         children: [
                           Text('${doctor.experience}y Experience',
                               style: const TextStyle(
-                                  color: Color(0xFFA0622A),
+                                  color: AppColors.textSecondary,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500)),
                           Text('${doctor.totalPatients}+ Patients',
                               style: const TextStyle(
-                                  color: Color(0xFFA0622A), fontSize: 11)),
+                                  color: AppColors.textSecondary,
+                                  fontSize: 11)),
                         ],
                       ),
                     ],
@@ -514,7 +523,7 @@ class _DoctorCard extends StatelessWidget {
                   children: [
                     Text('Rs. ${doctor.fee}',
                         style: const TextStyle(
-                            color: Color(0xFFD4822A),
+                            color: AppColors.primary,
                             fontSize: 12,
                             fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
@@ -522,10 +531,10 @@ class _DoctorCard extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: const BoxDecoration(
-                          color: Color(0xFF3B1F0A), shape: BoxShape.circle),
+                          color: AppColors.primary, shape: BoxShape.circle),
                       alignment: Alignment.center,
                       child: const Icon(Icons.chevron_right,
-                          color: Color(0xFFFBF6EC), size: 16),
+                          color: AppColors.white, size: 16),
                     ),
                   ],
                 ),
@@ -556,16 +565,17 @@ class _EmptyCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFFFBF6EC),
-        border: Border.all(color: const Color(0xFFEFE2CC)),
+        color: AppColors.white,
+        border: Border.all(color: AppColors.paleGreen),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         children: [
-          Icon(icon, color: const Color(0xFFEFE2CC), size: 32),
+          Icon(icon, color: AppColors.sage, size: 32),
           const SizedBox(height: 8),
           Text(label,
-              style: const TextStyle(color: Color(0xFFA0622A), fontSize: 13)),
+              style: const TextStyle(
+                  color: AppColors.textSecondary, fontSize: 13)),
         ],
       ),
     );
@@ -586,7 +596,8 @@ class _ErrorState extends StatelessWidget {
         const SizedBox(height: 80),
         Text(message,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: AppColors.brownMid, fontSize: 13)),
+            style:
+                const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
         const SizedBox(height: 12),
         OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
       ],

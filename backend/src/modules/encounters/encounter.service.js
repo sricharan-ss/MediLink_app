@@ -154,18 +154,32 @@ export async function createEncounter(data) {
         console.error('Failed to auto-generate invoice:', error.message);
     }
     
-    const notification = {
-        userId: await userRepo.getUserIdByPatientId(data.patientId),
-        title: 'Encounter Created',
-        message: `Your encounter has been scheduled on ${data.scheduledTime}.`,
-        type: 'ENCOUNTER_CREATED',
-        relatedId: encounter.encounterId,
-        isRead: false,
-        createdAt: new Date(),
-        updatedAt: new Date()
-    };
-    
-    await notificationRepo.createNotification(notification);
+    try {
+        const patientUserId = await userRepo.getUserIdByPatientId(data.patientId);
+        if (patientUserId) {
+            await notificationRepo.createNotificationSafely({
+                userId: patientUserId,
+                title: 'Appointment Booked',
+                message: `Your appointment with Dr. ${doctorName} has been booked for ${data.scheduledTime}.`,
+                type: 'APPOINTMENT',
+                relatedId: encounter.encounterId,
+                isRead: false
+            });
+        }
+        const doctorUserId = await userRepo.getUserIdByDoctorId(data.doctorId);
+        if (doctorUserId) {
+            await notificationRepo.createNotificationSafely({
+                userId: doctorUserId,
+                title: 'New Appointment Booked',
+                message: `A new appointment has been scheduled for ${data.scheduledTime}.`,
+                type: 'APPOINTMENT',
+                relatedId: encounter.encounterId,
+                isRead: false
+            });
+        }
+    } catch (notifError) {
+        console.error('Failed to create appointment notifications:', notifError.message);
+    }
 
     // Create reminder jobs for this encounter
     try {
@@ -233,6 +247,37 @@ export async function updateEncounter(encounterId, data) {
         }
     }
 
+    // Validate allowed status transitions
+    if (data.status && data.status !== encounter.status) {
+        const current = encounter.status;
+        const next = data.status;
+
+        // Terminal states cannot transition
+        if (['COMPLETED', 'CANCELLED', 'NO_SHOW'].includes(current)) {
+            throw new AppError(`Cannot update encounter in terminal status ${current}`, 400);
+        }
+
+        const validFromScheduled = ['IN_PROGRESS', 'CANCELLED', 'NO_SHOW', 'CONFIRMED', 'RESCHEDULED', 'COMPLETED'];
+        const validFromInProgress = ['COMPLETED', 'CANCELLED'];
+
+        if (['SCHEDULED', 'CONFIRMED', 'RESCHEDULED'].includes(current)) {
+            if (!validFromScheduled.includes(next)) {
+                throw new AppError(`Invalid status transition from ${current} to ${next}`, 400);
+            }
+        } else if (current === 'IN_PROGRESS') {
+            if (!validFromInProgress.includes(next)) {
+                throw new AppError(`Invalid status transition from ${current} to ${next}`, 400);
+            }
+        }
+
+        if (next === 'IN_PROGRESS' && !data.actualStartTime && !encounter.actualStartTime) {
+            data.actualStartTime = new Date();
+        }
+        if (next === 'COMPLETED' && !data.actualEndTime) {
+            data.actualEndTime = new Date();
+        }
+    }
+
     // Update the encounter
     const updatedEncounter = await encounterRepository.updateEncounter(encounterId, data);
     
@@ -282,17 +327,78 @@ export async function updateEncounter(encounterId, data) {
         throw new AppError('Failed to update doctor schedule: ' + error.message, 400);
     }
 
-    const notification = {
-        userId: await userRepo.getUserIdByPatientId(encounter.patientId),
-        title: 'Encounter Updated',
-        message: `Your encounter scheduled on ${encounter.scheduledTime} has been updated.`,
-        type: 'ENCOUNTER_UPDATE',
-        relatedId: encounter.encounterId,
-        isRead: false,
-        createdAt: new Date(),
-        updatedAt: new Date()
-    };
-    await notificationRepo.createNotification(notification);
+    try {
+        const patientUserId = await userRepo.getUserIdByPatientId(updatedEncounter.patientId);
+        const doctorUserId = await userRepo.getUserIdByDoctorId(updatedEncounter.doctorId);
+
+        if (data.status === 'CANCELLED') {
+            if (patientUserId) {
+                await notificationRepo.createNotificationSafely({
+                    userId: patientUserId,
+                    title: 'Appointment Cancelled',
+                    message: `Your appointment scheduled on ${updatedEncounter.scheduledTime} has been cancelled.`,
+                    type: 'APPOINTMENT',
+                    relatedId: updatedEncounter.encounterId,
+                    isRead: false
+                });
+            }
+            if (doctorUserId) {
+                await notificationRepo.createNotificationSafely({
+                    userId: doctorUserId,
+                    title: 'Appointment Cancelled',
+                    message: `The appointment scheduled on ${updatedEncounter.scheduledTime} has been cancelled.`,
+                    type: 'APPOINTMENT',
+                    relatedId: updatedEncounter.encounterId,
+                    isRead: false
+                });
+            }
+        } else if (isRescheduling) {
+            if (patientUserId) {
+                await notificationRepo.createNotificationSafely({
+                    userId: patientUserId,
+                    title: 'Appointment Rescheduled',
+                    message: `Your appointment has been rescheduled to ${data.scheduledTime}.`,
+                    type: 'APPOINTMENT',
+                    relatedId: updatedEncounter.encounterId,
+                    isRead: false
+                });
+            }
+            if (doctorUserId) {
+                await notificationRepo.createNotificationSafely({
+                    userId: doctorUserId,
+                    title: 'Appointment Rescheduled',
+                    message: `An appointment has been rescheduled to ${data.scheduledTime}.`,
+                    type: 'APPOINTMENT',
+                    relatedId: updatedEncounter.encounterId,
+                    isRead: false
+                });
+            }
+        } else if (data.status === 'COMPLETED') {
+            if (patientUserId) {
+                await notificationRepo.createNotificationSafely({
+                    userId: patientUserId,
+                    title: 'Consultation Completed',
+                    message: `Your consultation with the doctor has been completed.`,
+                    type: 'APPOINTMENT',
+                    relatedId: updatedEncounter.encounterId,
+                    isRead: false
+                });
+            }
+        } else {
+            if (patientUserId) {
+                await notificationRepo.createNotificationSafely({
+                    userId: patientUserId,
+                    title: 'Appointment Updated',
+                    message: `Your appointment scheduled on ${updatedEncounter.scheduledTime} has been updated.`,
+                    type: 'APPOINTMENT',
+                    relatedId: updatedEncounter.encounterId,
+                    isRead: false
+                });
+            }
+        }
+    } catch (notifError) {
+        console.error('Failed to send encounter update notification:', notifError.message);
+    }
     
     // If scheduledTime changed, update reminder jobs
     if (data.scheduledTime && data.scheduledTime !== encounter.scheduledTime) {

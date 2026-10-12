@@ -14,7 +14,8 @@ class AppointmentDetailScreen extends StatefulWidget {
   });
 
   @override
-  State<AppointmentDetailScreen> createState() => _AppointmentDetailScreenState();
+  State<AppointmentDetailScreen> createState() =>
+      _AppointmentDetailScreenState();
 }
 
 class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
@@ -35,10 +36,12 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   Future<void> _refreshAppointmentDetails() async {
     setState(() => _isLoadingDetails = true);
     try {
-      final updated = await PatientApiService.getAppointmentDetails(_appointment.id);
+      final updated =
+          await PatientApiService.getAppointmentDetails(_appointment.id);
       PatientSummary? summary;
       try {
-        summary = await PatientApiService.getSummaryByEncounter(_appointment.id);
+        summary =
+            await PatientApiService.getSummaryByEncounter(_appointment.id);
       } catch (_) {}
 
       if (!mounted) return;
@@ -56,12 +59,16 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
 
   bool get _canCancel {
     final status = _appointment.status.toUpperCase();
-    return status == 'SCHEDULED' || status == 'CONFIRMED' || status == 'RESCHEDULED';
+    return status == 'SCHEDULED' ||
+        status == 'CONFIRMED' ||
+        status == 'RESCHEDULED';
   }
 
   bool get _canReschedule {
     final status = _appointment.status.toUpperCase();
-    return status == 'SCHEDULED' || status == 'CONFIRMED' || status == 'RESCHEDULED';
+    return status == 'SCHEDULED' ||
+        status == 'CONFIRMED' ||
+        status == 'RESCHEDULED';
   }
 
   Color _statusColor(String status) {
@@ -87,8 +94,18 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   String _formatDate(DateTime? date) {
     if (date == null) return 'Not available';
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
@@ -109,7 +126,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
       builder: (dialogContext) {
         return AlertDialog(
           backgroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: const Text(
             'Cancel Appointment',
             style: TextStyle(
@@ -132,9 +150,11 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                 maxLines: 3,
                 decoration: InputDecoration(
                   labelText: 'Cancellation reason (optional)',
-                  labelStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  labelStyle: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 13),
                   hintText: 'e.g., Change in schedule, feeling better',
-                  hintStyle: const TextStyle(color: Colors.black26, fontSize: 12),
+                  hintStyle:
+                      const TextStyle(color: Colors.black26, fontSize: 12),
                   filled: true,
                   fillColor: AppColors.paleGreen,
                   border: OutlineInputBorder(
@@ -150,18 +170,22 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
               onPressed: () => Navigator.pop(dialogContext, false),
               child: const Text(
                 'Keep Appointment',
-                style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w600),
               ),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(dialogContext, true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.error,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
               ),
               child: const Text(
                 'Confirm Cancel',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -215,7 +239,9 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
     final hospitalId = _appointment.hospital?.id ?? _appointment.hospitalId;
 
     DateTime viewMonth = DateTime.now();
-    DateTime selectedDate = DateTime(viewMonth.year, viewMonth.month, viewMonth.day).add(const Duration(days: 1));
+    DateTime selectedDate =
+        DateTime(viewMonth.year, viewMonth.month, viewMonth.day)
+            .add(const Duration(days: 1));
     String? selectedTime;
     List<PatientSlot> availableSlots = [];
     bool loadingSlots = false;
@@ -256,9 +282,12 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
               loadSlotsForDate(selectedDate);
             }
 
-            final firstDayOfMonth = DateTime(viewMonth.year, viewMonth.month, 1);
-            final firstWeekday = firstDayOfMonth.weekday == 7 ? 0 : firstDayOfMonth.weekday;
-            final daysInMonth = DateTime(viewMonth.year, viewMonth.month + 1, 0).day;
+            final firstDayOfMonth =
+                DateTime(viewMonth.year, viewMonth.month, 1);
+            final firstWeekday =
+                firstDayOfMonth.weekday == 7 ? 0 : firstDayOfMonth.weekday;
+            final daysInMonth =
+                DateTime(viewMonth.year, viewMonth.month + 1, 0).day;
             final cells = <DateTime?>[];
             for (var i = 0; i < firstWeekday; i++) {
               cells.add(null);
@@ -299,7 +328,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   const SizedBox(height: 4),
                   Text(
                     'Select a new date and time with ${_appointment.doctor?.name ?? 'your doctor'}.',
-                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                    style: const TextStyle(
+                        color: AppColors.textSecondary, fontSize: 13),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -316,18 +346,22 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                       Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.chevron_left, color: AppColors.primary),
+                            icon: const Icon(Icons.chevron_left,
+                                color: AppColors.primary),
                             onPressed: () {
                               setSheetState(() {
-                                viewMonth = DateTime(viewMonth.year, viewMonth.month - 1, 1);
+                                viewMonth = DateTime(
+                                    viewMonth.year, viewMonth.month - 1, 1);
                               });
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.chevron_right, color: AppColors.primary),
+                            icon: const Icon(Icons.chevron_right,
+                                color: AppColors.primary),
                             onPressed: () {
                               setSheetState(() {
-                                viewMonth = DateTime(viewMonth.year, viewMonth.month + 1, 1);
+                                viewMonth = DateTime(
+                                    viewMonth.year, viewMonth.month + 1, 1);
                               });
                             },
                           ),
@@ -338,7 +372,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) {
+                    children:
+                        ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) {
                       return SizedBox(
                         width: 36,
                         child: Text(
@@ -358,7 +393,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     height: 180,
                     child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 7,
                         childAspectRatio: 1.2,
                         mainAxisSpacing: 4,
@@ -369,7 +405,10 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                         final date = cells[index];
                         if (date == null) return const SizedBox();
 
-                        final isPast = date.isBefore(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
+                        final isPast = date.isBefore(DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day));
                         final isSelected = selectedDate.year == date.year &&
                             selectedDate.month == date.month &&
                             selectedDate.day == date.day;
@@ -388,7 +427,9 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? AppColors.primary
-                                  : (isPast ? Colors.transparent : AppColors.paleGreen),
+                                  : (isPast
+                                      ? Colors.transparent
+                                      : AppColors.paleGreen),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             alignment: Alignment.center,
@@ -397,9 +438,13 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                               style: TextStyle(
                                 color: isSelected
                                     ? Colors.white
-                                    : (isPast ? Colors.black26 : AppColors.textPrimary),
+                                    : (isPast
+                                        ? Colors.black26
+                                        : AppColors.textPrimary),
                                 fontSize: 13,
-                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
                               ),
                             ),
                           ),
@@ -419,16 +464,22 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   const SizedBox(height: 10),
                   Expanded(
                     child: loadingSlots
-                        ? const Center(child: CircularProgressIndicator(color: AppColors.secondary))
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.secondary))
                         : availableSlots.isEmpty
                             ? Center(
                                 child: Text(
-                                  slotError ?? 'No available slots for this day.',
-                                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                                  slotError ??
+                                      'No available slots for this day.',
+                                  style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 13),
                                 ),
                               )
                             : GridView.builder(
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   childAspectRatio: 2.2,
                                   mainAxisSpacing: 8,
@@ -437,7 +488,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                                 itemCount: availableSlots.length,
                                 itemBuilder: (context, index) {
                                   final slot = availableSlots[index];
-                                  final isSlotSelected = selectedTime == slot.time;
+                                  final isSlotSelected =
+                                      selectedTime == slot.time;
                                   return GestureDetector(
                                     onTap: slot.available
                                         ? () {
@@ -450,7 +502,9 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                                       decoration: BoxDecoration(
                                         color: isSlotSelected
                                             ? AppColors.secondary
-                                            : (slot.available ? AppColors.paleGreen : Colors.black12),
+                                            : (slot.available
+                                                ? AppColors.paleGreen
+                                                : Colors.black12),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       alignment: Alignment.center,
@@ -459,9 +513,13 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                                         style: TextStyle(
                                           color: isSlotSelected
                                               ? Colors.white
-                                              : (slot.available ? AppColors.textPrimary : Colors.black38),
+                                              : (slot.available
+                                                  ? AppColors.textPrimary
+                                                  : Colors.black38),
                                           fontSize: 12,
-                                          fontWeight: isSlotSelected ? FontWeight.w700 : FontWeight.w500,
+                                          fontWeight: isSlotSelected
+                                              ? FontWeight.w700
+                                              : FontWeight.w500,
                                         ),
                                       ),
                                     ),
@@ -478,7 +536,9 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                           : () {
                               final parts = selectedTime!.split(':');
                               final hour = int.tryParse(parts.first) ?? 9;
-                              final minute = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+                              final minute = parts.length > 1
+                                  ? int.tryParse(parts[1]) ?? 0
+                                  : 0;
                               final newDateTime = DateTime(
                                 selectedDate.year,
                                 selectedDate.month,
@@ -491,11 +551,15 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                       child: const Text(
                         'Confirm Reschedule',
-                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -515,40 +579,58 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
       builder: (dialogContext) {
         return AlertDialog(
           backgroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: const Text(
             'Confirm Reschedule',
-            style: TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w700),
+            style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.w700),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Current Appointment:', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              const Text('Current Appointment:',
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 12)),
               Text(
                 '${_formatDate(_appointment.scheduledTime)} at ${_formatTime(_appointment.scheduledTime)}',
-                style: const TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 14),
-              const Text('New Appointment:', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              const Text('New Appointment:',
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 12)),
               Text(
                 '${_formatDate(result)} at ${_formatTime(result)}',
-                style: const TextStyle(color: AppColors.primary, fontSize: 15, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+              child: const Text('Cancel',
+                  style: TextStyle(color: AppColors.textSecondary)),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(dialogContext, true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
               ),
-              child: const Text('Confirm', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+              child: const Text('Confirm',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w600)),
             ),
           ],
         );
@@ -598,8 +680,18 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
 
   String _monthName(int month) {
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return months[month - 1];
   }
@@ -616,8 +708,11 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final doctorName = _appointment.doctor?.name ?? 'Doctor Appointment';
-    final doctorSpecialty = _appointment.doctor?.specialty ?? 'General Practice';
-    final hospitalName = _appointment.hospital?.name ?? _appointment.doctor?.hospitalName ?? 'MediLink Hospital';
+    final doctorSpecialty =
+        _appointment.doctor?.specialty ?? 'General Practice';
+    final hospitalName = _appointment.hospital?.name ??
+        _appointment.doctor?.hospitalName ??
+        'MediLink Hospital';
     final status = _appointment.status.toUpperCase();
     final statusBadgeColor = _statusColor(status);
 
@@ -636,7 +731,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
         ],
       ),
       body: _isLoadingDetails
-          ? const Center(child: CircularProgressIndicator(color: AppColors.secondary))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.secondary))
           : ListView(
               padding: const EdgeInsets.all(20),
               children: [
@@ -664,7 +760,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                           ),
                           const SizedBox(height: 4),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: statusBadgeColor.withAlpha(40),
                               borderRadius: BorderRadius.circular(8),
@@ -718,7 +815,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     _buildField('Specialization', doctorSpecialty),
                     _buildField('Hospital', hospitalName),
                     if (_appointment.doctor?.experience != null)
-                      _buildField('Experience', '${_appointment.doctor!.experience} years'),
+                      _buildField('Experience',
+                          '${_appointment.doctor!.experience} years'),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -728,8 +826,10 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   title: 'Schedule & Timing',
                   icon: Icons.calendar_today_outlined,
                   children: [
-                    _buildField('Date', _formatDate(_appointment.scheduledTime)),
-                    _buildField('Time', _formatTime(_appointment.scheduledTime)),
+                    _buildField(
+                        'Date', _formatDate(_appointment.scheduledTime)),
+                    _buildField(
+                        'Time', _formatTime(_appointment.scheduledTime)),
                     _buildField('Duration', '${_appointment.duration} minutes'),
                     _buildField('Visit Type', _appointment.visitType ?? 'OPD'),
                   ],
@@ -741,19 +841,24 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   title: 'Encounter Information',
                   icon: Icons.medical_information_outlined,
                   children: [
-                    _buildField('Reason for Visit', _appointment.reason ?? 'Not available'),
+                    _buildField('Reason for Visit',
+                        _appointment.reason ?? 'Not available'),
                     if ((_appointment.notes ?? '').trim().isNotEmpty)
                       _buildField('Notes', _appointment.notes!),
                     if ((_appointment.chiefComplaint ?? '').trim().isNotEmpty)
-                      _buildField('Chief Complaint', _appointment.chiefComplaint!),
+                      _buildField(
+                          'Chief Complaint', _appointment.chiefComplaint!),
                     if ((_appointment.diagnosis ?? '').trim().isNotEmpty)
                       _buildField('Diagnosis', _appointment.diagnosis!),
                     if ((_appointment.outcome ?? '').trim().isNotEmpty)
                       _buildField('Outcome', _appointment.outcome!),
                     if (_appointment.followUpDate != null)
-                      _buildField('Follow-Up Date', _formatDate(_appointment.followUpDate)),
+                      _buildField('Follow-Up Date',
+                          _formatDate(_appointment.followUpDate)),
                     if ((_appointment.cancellationNote ?? '').trim().isNotEmpty)
-                      _buildField('Cancellation Reason', _appointment.cancellationNote!, isHighlight: true),
+                      _buildField(
+                          'Cancellation Reason', _appointment.cancellationNote!,
+                          isHighlight: true),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -779,17 +884,20 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                       if ((_summary!.keyFindings ?? '').trim().isNotEmpty)
                         _buildField('Key Findings', _summary!.keyFindings!),
                       if ((_summary!.recommendations ?? '').trim().isNotEmpty)
-                        _buildField('Recommendations', _summary!.recommendations!),
+                        _buildField(
+                            'Recommendations', _summary!.recommendations!),
                       if ((_summary!.riskFactors ?? '').trim().isNotEmpty)
                         _buildField('Risk Factors', _summary!.riskFactors!),
                       if ((_summary!.medicalHistory ?? '').trim().isNotEmpty)
-                        _buildField('Medical History', _summary!.medicalHistory!),
+                        _buildField(
+                            'Medical History', _summary!.medicalHistory!),
                       if ((_summary!.labHistory ?? '').trim().isNotEmpty)
                         _buildField('Lab History', _summary!.labHistory!),
                       if ((_summary!.generatedBy ?? '').trim().isNotEmpty)
                         _buildField('Generated By', _summary!.generatedBy!),
                       if (_summary!.generatedAt != null)
-                        _buildField('Generated Date', _formatDate(_summary!.generatedAt)),
+                        _buildField('Generated Date',
+                            _formatDate(_summary!.generatedAt)),
                     ],
                   ],
                 ),
@@ -799,41 +907,54 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                 if (_canReschedule || _canCancel) ...[
                   if (_canReschedule)
                     ElevatedButton.icon(
-                      onPressed: (_isRescheduling || _isCancelling) ? null : _openRescheduleSheet,
+                      onPressed: (_isRescheduling || _isCancelling)
+                          ? null
+                          : _openRescheduleSheet,
                       icon: _isRescheduling
                           ? const SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
                             )
                           : const Icon(Icons.edit_calendar_outlined, size: 18),
-                      label: Text(_isRescheduling ? 'Rescheduling...' : 'Reschedule Appointment'),
+                      label: Text(_isRescheduling
+                          ? 'Rescheduling...'
+                          : 'Reschedule Appointment'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
                   if (_canReschedule && _canCancel) const SizedBox(height: 12),
                   if (_canCancel)
                     OutlinedButton.icon(
-                      onPressed: (_isCancelling || _isRescheduling) ? null : _showCancelDialog,
+                      onPressed: (_isCancelling || _isRescheduling)
+                          ? null
+                          : _showCancelDialog,
                       icon: _isCancelling
                           ? const SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.error),
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: AppColors.error),
                             )
-                          : const Icon(Icons.cancel_outlined, size: 18, color: AppColors.error),
+                          : const Icon(Icons.cancel_outlined,
+                              size: 18, color: AppColors.error),
                       label: Text(
                         _isCancelling ? 'Cancelling...' : 'Cancel Appointment',
-                        style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                            color: AppColors.error,
+                            fontWeight: FontWeight.w600),
                       ),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: AppColors.error),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
                 ],

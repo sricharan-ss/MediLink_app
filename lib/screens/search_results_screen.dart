@@ -154,7 +154,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [AppColors.brownDeep, AppColors.brownMid],
+          colors: [AppColors.primary, AppColors.secondary],
         ),
       ),
       child: SafeArea(
@@ -173,7 +173,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.arrow_back,
-                      color: AppColors.cream, size: 20),
+                      color: AppColors.paleGreen, size: 20),
                 ),
               ),
               const SizedBox(width: 10),
@@ -187,7 +187,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     children: [
                       const SizedBox(width: 12),
                       const Icon(Icons.search,
-                          color: AppColors.brownMid, size: 18),
+                          color: AppColors.textSecondary, size: 18),
                       const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
@@ -196,7 +196,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                           onChanged: _onSearchChanged,
                           onSubmitted: (_) => _rememberSearch(),
                           style: const TextStyle(
-                            color: AppColors.brownDeep,
+                            color: AppColors.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -221,7 +221,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                 color: AppColors.surface,
                                 shape: BoxShape.circle),
                             child: const Icon(Icons.close,
-                                size: 12, color: AppColors.brownDeep),
+                                size: 12, color: AppColors.textPrimary),
                           ),
                         )
                       else
@@ -251,11 +251,11 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.history, color: AppColors.brownLight, size: 16),
+                  Icon(Icons.history, color: AppColors.secondary, size: 16),
                   SizedBox(width: 6),
                   Text('Recent Searches',
                       style: TextStyle(
-                          color: AppColors.brownDeep,
+                          color: AppColors.textPrimary,
                           fontSize: 14,
                           fontWeight: FontWeight.w600)),
                 ],
@@ -280,11 +280,11 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         ],
         const Row(
           children: [
-            Icon(Icons.trending_up, color: AppColors.brownLight, size: 16),
+            Icon(Icons.trending_up, color: AppColors.secondary, size: 16),
             SizedBox(width: 6),
             Text('Trending Specialties',
                 style: TextStyle(
-                    color: AppColors.brownDeep,
+                    color: AppColors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600)),
           ],
@@ -299,7 +299,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     return Text(
       title,
       style: const TextStyle(
-          color: AppColors.brownLight,
+          color: AppColors.secondary,
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.0),
@@ -350,14 +350,14 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                       width: 42,
                       height: 42,
                       decoration: const BoxDecoration(
-                          color: AppColors.cream, shape: BoxShape.circle),
+                          color: AppColors.paleGreen, shape: BoxShape.circle),
                       child: Icon(action.icon,
-                          size: 22, color: AppColors.brownDeep),
+                          size: 22, color: AppColors.textPrimary),
                     ),
                     const SizedBox(height: 8),
                     Text(action.label,
                         style: const TextStyle(
-                            color: AppColors.brownDeep,
+                            color: AppColors.textPrimary,
                             fontSize: 11,
                             fontWeight: FontWeight.w600)),
                   ],
@@ -374,7 +374,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     return Container(
       padding: const EdgeInsets.only(left: 12, right: 4, top: 6, bottom: 6),
       decoration: BoxDecoration(
-        color: AppColors.cream,
+        color: AppColors.paleGreen,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.surface),
       ),
@@ -385,7 +385,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             onTap: () => _setQuery(search),
             child: Text(search,
                 style: const TextStyle(
-                    color: AppColors.brownMid,
+                    color: AppColors.textSecondary,
                     fontSize: 12,
                     fontWeight: FontWeight.w500)),
           ),
@@ -395,7 +395,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             child: const SizedBox(
               width: 18,
               height: 18,
-              child: Icon(Icons.close, size: 10, color: AppColors.brownLight),
+              child: Icon(Icons.close, size: 10, color: AppColors.secondary),
             ),
           ),
         ],
@@ -427,7 +427,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: AppColors.cream,
+            color: AppColors.paleGreen,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.surface),
           ),
@@ -440,14 +440,14 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     color: AppColors.surface,
                     borderRadius: BorderRadius.circular(10)),
                 child: const Icon(Icons.medical_services_outlined,
-                    size: 16, color: AppColors.brownDeep),
+                    size: 16, color: AppColors.textPrimary),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   specialties[index],
                   style: const TextStyle(
-                      color: AppColors.brownDeep,
+                      color: AppColors.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w500),
                   overflow: TextOverflow.ellipsis,
@@ -499,14 +499,14 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.brownDeep : AppColors.cream,
+          color: isActive ? AppColors.primary : AppColors.paleGreen,
           borderRadius: BorderRadius.circular(20),
           border: isActive ? null : Border.all(color: AppColors.surface),
         ),
         child: Text(
           label,
           style: TextStyle(
-              color: isActive ? AppColors.cream : AppColors.brownMid,
+              color: isActive ? AppColors.white : AppColors.textSecondary,
               fontSize: 13,
               fontWeight: FontWeight.w600),
         ),
@@ -520,7 +520,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       children: [
         Text(_errorMessage!,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: AppColors.brownMid, fontSize: 13)),
+            style:
+                const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
         const SizedBox(height: 12),
         OutlinedButton(onPressed: _loadResults, child: const Text('Retry')),
       ],
@@ -538,7 +539,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             const SizedBox(height: 16),
             const Text('No results found',
                 style: TextStyle(
-                    color: AppColors.brownDeep,
+                    color: AppColors.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.w600)),
             const SizedBox(height: 6),
@@ -546,7 +547,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               'We could not find anything matching "${_controller.text}". Try a specialty, doctor name, or hospital city.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: AppColors.brownMid.withValues(alpha: 0.7), fontSize: 14),
+                  color: AppColors.textSecondary.withValues(alpha: 0.7),
+                  fontSize: 14),
             ),
           ],
         ),
@@ -585,7 +587,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       children: [
         Text(title,
             style: const TextStyle(
-                color: AppColors.brownLight,
+                color: AppColors.secondary,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.0)),
@@ -596,7 +598,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               borderRadius: BorderRadius.circular(12)),
           child: Text('$count found',
               style: const TextStyle(
-                  color: AppColors.brownDeep,
+                  color: AppColors.textPrimary,
                   fontSize: 10,
                   fontWeight: FontWeight.w500)),
         ),
@@ -650,20 +652,20 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   children: [
                     Text(doctor.name,
                         style: const TextStyle(
-                            color: AppColors.brownDeep,
+                            color: AppColors.textPrimary,
                             fontSize: 15,
                             fontWeight: FontWeight.w600),
                         overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 2),
                     Text(doctor.specialty,
                         style: const TextStyle(
-                            color: AppColors.brownMid,
+                            color: AppColors.textSecondary,
                             fontSize: 12,
                             fontWeight: FontWeight.w500)),
                     const SizedBox(height: 2),
                     Text(doctor.hospitalName,
                         style: const TextStyle(
-                            color: AppColors.brownLight, fontSize: 11),
+                            color: AppColors.secondary, fontSize: 11),
                         overflow: TextOverflow.ellipsis),
                   ],
                 ),
@@ -707,7 +709,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     color: AppColors.surface,
                     borderRadius: BorderRadius.circular(14)),
                 child: const Icon(Icons.local_hospital_outlined,
-                    size: 24, color: AppColors.brownDeep),
+                    size: 24, color: AppColors.textPrimary),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -716,7 +718,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   children: [
                     Text(hospital.name,
                         style: const TextStyle(
-                            color: AppColors.brownDeep,
+                            color: AppColors.textPrimary,
                             fontSize: 15,
                             fontWeight: FontWeight.w600),
                         overflow: TextOverflow.ellipsis),
@@ -724,13 +726,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     Row(
                       children: [
                         const Icon(Icons.location_on_outlined,
-                            size: 12, color: AppColors.brownMid),
+                            size: 12, color: AppColors.textSecondary),
                         const SizedBox(width: 3),
                         Expanded(
                           child: Text(
                               '${hospital.city} - ${hospital.doctorCount} doctors',
                               style: const TextStyle(
-                                  color: AppColors.brownMid, fontSize: 12),
+                                  color: AppColors.textSecondary, fontSize: 12),
                               overflow: TextOverflow.ellipsis),
                         ),
                       ],
@@ -754,10 +756,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-          color: AppColors.cream, borderRadius: BorderRadius.circular(12)),
+          color: AppColors.paleGreen, borderRadius: BorderRadius.circular(12)),
       child: Text(tag,
           style: const TextStyle(
-              color: AppColors.brownLight,
+              color: AppColors.secondary,
               fontSize: 10,
               fontWeight: FontWeight.w500)),
     );

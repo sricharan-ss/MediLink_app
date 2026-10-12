@@ -16,6 +16,8 @@ import 'screens/hospital_list_screen.dart';
 import 'screens/doctor_list_screen.dart';
 import 'screens/search_results_screen.dart';
 import 'screens/notification_center_screen.dart';
+import 'screens/doctor_dashboard_screen.dart';
+import 'screens/doctor_consultation_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -48,7 +50,9 @@ class MediLinkApp extends StatelessWidget {
           child: child ?? const SizedBox.shrink(),
         );
       },
-      initialRoute: SessionStore.isLoggedIn ? '/main-app' : '/',
+      initialRoute: SessionStore.isLoggedIn
+          ? (SessionStore.isDoctor ? '/doctor-dashboard' : '/main-app')
+          : '/',
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
@@ -69,6 +73,18 @@ class MediLinkApp extends StatelessWidget {
             );
           case '/main-app':
             return MaterialPageRoute(builder: (_) => const MainAppScreen());
+          case '/doctor-dashboard':
+            return MaterialPageRoute(
+              builder: (_) => const DoctorDashboardScreen(),
+            );
+          case '/doctor-consultation':
+            final args = settings.arguments as Map<String, dynamic>?;
+            final encounterId = args?['encounterId'] as String? ?? '';
+            return MaterialPageRoute(
+              builder: (_) => DoctorConsultationScreen(
+                encounterId: encounterId,
+              ),
+            );
           case '/settings':
             return MaterialPageRoute(builder: (_) => const SettingsScreen());
           case '/appearance':

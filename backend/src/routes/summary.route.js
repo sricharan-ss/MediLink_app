@@ -5,6 +5,13 @@ import roleMiddleware from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
 
+router.post(
+  '/',
+  authMiddleware,
+  roleMiddleware(['DOCTOR', 'NURSE', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']),
+  summaryController.create
+);
+
 router.get(
   '/',
   authMiddleware,

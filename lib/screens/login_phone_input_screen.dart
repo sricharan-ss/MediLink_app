@@ -27,7 +27,8 @@ class _LoginPhoneInputScreenState extends State<LoginPhoneInputScreen> {
 
   void _checkValidity() {
     final phoneText = _phoneController.text.trim();
-    final phoneValid = phoneText.length == 10 && RegExp(r'^[0-9]+$').hasMatch(phoneText);
+    final phoneValid =
+        phoneText.length == 10 && RegExp(r'^[0-9]+$').hasMatch(phoneText);
     if (_isValid != phoneValid) {
       setState(() {
         _isValid = phoneValid;
@@ -108,22 +109,27 @@ class _LoginPhoneInputScreenState extends State<LoginPhoneInputScreen> {
                     maxLength: 10,
                     decoration: InputDecoration(
                       hintText: '+91-9790939361',
-                      hintStyle: const TextStyle(color: AppColors.textSecondary),
+                      hintStyle:
+                          const TextStyle(color: AppColors.textSecondary),
                       counterText: "",
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 16),
                       filled: true,
                       fillColor: AppColors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.paleGreen),
+                        borderSide:
+                            const BorderSide(color: AppColors.paleGreen),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.paleGreen, width: 1.2),
+                        borderSide: const BorderSide(
+                            color: AppColors.paleGreen, width: 1.2),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                        borderSide: const BorderSide(
+                            color: AppColors.primary, width: 2),
                       ),
                       errorText: _errorMessage,
                     ),
@@ -132,7 +138,8 @@ class _LoginPhoneInputScreenState extends State<LoginPhoneInputScreen> {
                     const SizedBox(height: 12),
                     Text(
                       _errorMessage!,
-                      style: const TextStyle(color: AppColors.error, fontSize: 14),
+                      style:
+                          const TextStyle(color: AppColors.error, fontSize: 14),
                     ),
                   ],
                   const SizedBox(height: 28),
@@ -145,7 +152,8 @@ class _LoginPhoneInputScreenState extends State<LoginPhoneInputScreen> {
                         backgroundColor: _isValid
                             ? AppColors.primary
                             : AppColors.primary.withValues(alpha: 0.4),
-                        disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
+                        disabledBackgroundColor:
+                            AppColors.primary.withValues(alpha: 0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -153,7 +161,8 @@ class _LoginPhoneInputScreenState extends State<LoginPhoneInputScreen> {
                       ),
                       child: _isLoading
                           ? const CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             )
                           : const Text(
                               'Login with OTP',

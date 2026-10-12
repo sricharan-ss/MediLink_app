@@ -111,3 +111,18 @@ export const getHospitalById = async (hospitalId) => {
   });
 };
 
+export const updateHospital = async (hospitalId, data) => {
+  return await prisma.hospital.update({
+    where: { hospitalId },
+    data: {
+      ...(data.name && { name: data.name }),
+      ...(data.address && { address: data.address }),
+      ...(data.city && { city: data.city }),
+      ...(data.state !== undefined && { state: data.state }),
+      ...(data.rating !== undefined && { rating: data.rating }),
+      ...(data.ranking !== undefined && { ranking: data.ranking }),
+      updatedAt: new Date(),
+    },
+  });
+};
+

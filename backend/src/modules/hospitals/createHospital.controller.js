@@ -64,3 +64,14 @@ export const getHospitalById = async (req, res, next) => {
     next(err);
   }
 };
+
+export const updateHospitalController = async (req, res, next) => {
+  try {
+    const hospitalId = req.params.id;
+    const { updateHospital } = await import('./hospital.repo.js');
+    const updated = await updateHospital(hospitalId, req.body);
+    res.status(200).json(updated);
+  } catch (err) {
+    next(err);
+  }
+};

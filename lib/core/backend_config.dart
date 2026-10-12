@@ -10,9 +10,9 @@ class BackendConfig {
       return _normalize(configured);
     }
 
-    // Backend folder location does not matter; only reachable host/port matters.
+    // For Android devices, connect via the machine's local Wi-Fi IP.
     final fallback = (defaultTargetPlatform == TargetPlatform.android)
-        ? 'http://10.0.2.2:5000'
+        ? 'http://192.168.1.6:5000'
         : 'http://127.0.0.1:5000';
     return _normalize(fallback);
   }

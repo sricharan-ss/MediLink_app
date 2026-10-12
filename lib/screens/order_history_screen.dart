@@ -104,7 +104,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: AppColors.brownDeep,
+        backgroundColor: AppColors.primary,
         iconTheme: const IconThemeData(color: AppColors.cream),
         elevation: 0,
         centerTitle: true,
@@ -127,7 +127,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                               _errorMessage!,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                color: AppColors.brownMid,
+                                color: AppColors.textSecondary,
                                 fontSize: 13,
                               ),
                             ),
@@ -135,7 +135,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                             ElevatedButton(
                               onPressed: _loadOrders,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.brownDeep,
+                                backgroundColor: AppColors.primary,
                                 foregroundColor: AppColors.cream,
                               ),
                               child: const Text('Retry'),
@@ -153,7 +153,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                             child: Text(
                               'No orders found yet.',
                               style: TextStyle(
-                                color: AppColors.brownMid,
+                                color: AppColors.textSecondary,
                                 fontSize: 13,
                               ),
                             ),
@@ -188,7 +188,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                       child: Text(
                                         _text(order['id']),
                                         style: const TextStyle(
-                                          color: AppColors.brownLight,
+                                          color: AppColors.secondary,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -219,7 +219,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                   const Text(
                                     'No items',
                                     style: TextStyle(
-                                      color: AppColors.brownDeep,
+                                      color: AppColors.textPrimary,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -230,7 +230,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                     child: Text(
                                       '${_text(item['name'], 'Medicine')} x${_text(item['quantity'], '1')}',
                                       style: const TextStyle(
-                                        color: AppColors.brownDeep,
+                                        color: AppColors.textPrimary,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -249,7 +249,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                           _text(order['orderedAt']),
                                         )),
                                         style: const TextStyle(
-                                          color: AppColors.brownMid,
+                                          color: AppColors.textSecondary,
                                           fontSize: 12,
                                         ),
                                         overflow: TextOverflow.ellipsis,
@@ -259,7 +259,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                     Text(
                                       'Rs. ${_toDouble(order['totalAmount']).toStringAsFixed(2)}',
                                       style: const TextStyle(
-                                        color: AppColors.brownDeep,
+                                        color: AppColors.textPrimary,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -293,9 +293,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                             size: 16),
                                         label: const Text('Order Again'),
                                         style: OutlinedButton.styleFrom(
-                                          foregroundColor: AppColors.brownDeep,
+                                          foregroundColor: AppColors.primary,
                                           side: const BorderSide(
-                                              color: AppColors.brownDeep),
+                                              color: AppColors.textPrimary),
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(12),
@@ -325,7 +325,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                             size: 16),
                                         label: const Text('Track Order'),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColors.brownDeep,
+                                          backgroundColor: AppColors.primary,
                                           foregroundColor: AppColors.cream,
                                           elevation: 0,
                                           shape: RoundedRectangleBorder(

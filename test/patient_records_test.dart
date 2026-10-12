@@ -99,7 +99,7 @@ void main() {
   });
 
   group('PatientRecords Model Tests', () {
-    test('aggregates appointments, prescriptions, and summaries', () {
+    test('aggregates appointments, prescriptions, summaries, labReports, and vault', () {
       final json = {
         'appointments': [],
         'prescriptions': [
@@ -108,8 +108,21 @@ void main() {
         'summaries': [
           {'summaryId': 's-1', 'keyFindings': 'Clear'}
         ],
-        'labReports': [],
-        'vault': [],
+        'labReports': [
+          {
+            'resultId': 'lab-1',
+            'resultValue': '7200',
+            'isAbnormal': false,
+            'labTest': {'testName': 'CBC', 'unit': 'cells/mcL'},
+          }
+        ],
+        'vault': [
+          {
+            'id': 'v-1',
+            'fileName': 'xray.pdf',
+            'fileUrl': 'https://res.cloudinary.com/test/xray.pdf',
+          }
+        ],
         'medications': [],
       };
 
@@ -120,6 +133,29 @@ void main() {
       expect(records.summaries.length, 1);
       expect(records.summaries.first.id, 's-1');
       expect(records.summaries.first.keyFindings, 'Clear');
+      expect(records.labReports.length, 1);
+      expect(records.labReports.first['resultValue'], '7200');
+      expect(records.vault.length, 1);
+      expect(records.vault.first['fileName'], 'xray.pdf');
+    });
+  });
+
+  group('PatientApiService friendlyError Tests', () {
+    test('formats network errors cleanly', () {
+      final err = Exception('SocketException: connection refused');
+      expect(
+        PatientApiService.friendlyError(err),
+        'Unable to reach MediLink right now. Check your connection and try again.',
+      );
+    });
+
+    test('formats auth errors cleanly', () {
+      final err = const PatientApiException('Unauthorized access');
+      expect(
+        PatientApiService.friendlyError(err),
+        'Your session has expired. Please log in again.',
+      );
     });
   });
 }
+

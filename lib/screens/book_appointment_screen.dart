@@ -260,7 +260,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
         const SizedBox(width: 6),
         Text(
           text,
-          style: const TextStyle(color: Color(0xFFA0622A), fontSize: 10),
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 10),
         ),
       ],
     );
@@ -275,7 +275,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
     final canConfirm = _selectedDate != null && _selectedTime != null;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFDF8),
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           Column(
@@ -286,7 +286,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: [AppColors.brownDeep, AppColors.brownMid],
+                    colors: [AppColors.primary, AppColors.secondary],
                   ),
                 ),
                 child: SafeArea(
@@ -333,8 +333,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFBF6EC),
-                            border: Border.all(color: const Color(0xFFEFE2CC)),
+                            color: AppColors.white,
+                            border: Border.all(color: AppColors.paleGreen),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Row(
@@ -348,8 +348,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      Color(0xFFD4822A),
-                                      Color(0xFFA0622A),
+                                      AppColors.primary,
+                                      AppColors.secondary,
                                     ],
                                   ),
                                 ),
@@ -359,10 +359,10 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                           widget.doctorName.length > 4
                                       ? widget.doctorName[4]
                                       : (widget.doctorName.isNotEmpty
-                                            ? widget.doctorName[0]
-                                            : 'D'),
+                                          ? widget.doctorName[0]
+                                          : 'D'),
                                   style: const TextStyle(
-                                    color: Color(0xFFFBF6EC),
+                                    color: AppColors.white,
                                     fontSize: 20,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: 'Playfair Display',
@@ -377,24 +377,23 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     Text(
                                       widget.doctorName,
                                       style: const TextStyle(
-                                        color: Color(0xFF3B1F0A),
+                                        color: AppColors.textPrimary,
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
-                                        fontFamily: 'Playfair Display',
                                       ),
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
                                       widget.doctorSpecialty,
                                       style: const TextStyle(
-                                        color: Color(0xFF6B3A1F),
+                                        color: AppColors.textSecondary,
                                         fontSize: 12,
                                       ),
                                     ),
                                     Text(
                                       widget.hospitalName,
                                       style: const TextStyle(
-                                        color: Color(0xFFA0622A),
+                                        color: AppColors.textSecondary,
                                         fontSize: 11,
                                       ),
                                     ),
@@ -402,9 +401,9 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     Text(
                                       '\$${widget.fee} / visit',
                                       style: const TextStyle(
-                                        color: Color(0xFFD4822A),
+                                        color: AppColors.primary,
                                         fontSize: 12,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ],
@@ -421,14 +420,14 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                           children: [
                             Icon(
                               Icons.calendar_month,
-                              color: Color(0xFF3B1F0A),
+                              color: AppColors.primary,
                               size: 16,
                             ),
                             SizedBox(width: 8),
                             Text(
                               'Select Date',
                               style: TextStyle(
-                                color: Color(0xFF3B1F0A),
+                                color: AppColors.textPrimary,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -438,8 +437,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                         const SizedBox(height: 12),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFBF6EC),
-                            border: Border.all(color: const Color(0xFFEFE2CC)),
+                            color: AppColors.white,
+                            border: Border.all(color: AppColors.paleGreen),
                             borderRadius: BorderRadius.circular(18),
                           ),
                           child: Column(
@@ -463,10 +462,9 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                         child: Icon(
                                           Icons.chevron_left,
                                           color: isPrevDisabled
-                                              ? const Color(
-                                                  0xFF3B1F0A,
-                                                ).withValues(alpha: 0.3)
-                                              : const Color(0xFF3B1F0A),
+                                              ? AppColors.primary
+                                                  .withValues(alpha: 0.3)
+                                              : AppColors.primary,
                                           size: 20,
                                         ),
                                       ),
@@ -474,7 +472,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     Text(
                                       '${_monthNames[month - 1]} $year',
                                       style: const TextStyle(
-                                        color: Color(0xFF3B1F0A),
+                                        color: AppColors.textPrimary,
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -487,7 +485,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                         alignment: Alignment.center,
                                         child: const Icon(
                                           Icons.chevron_right,
-                                          color: Color(0xFF3B1F0A),
+                                          color: AppColors.primary,
                                           size: 20,
                                         ),
                                       ),
@@ -497,7 +495,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                               ),
                               const Divider(
                                 height: 1,
-                                color: Color(0xFFEFE2CC),
+                                color: AppColors.paleGreen,
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -517,10 +515,9 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: isWeekendStr
-                                              ? const Color(
-                                                  0xFFD4822A,
-                                                ).withValues(alpha: 0.7)
-                                              : const Color(0xFFA0622A),
+                                              ? AppColors.textSecondary
+                                                  .withValues(alpha: 0.7)
+                                              : AppColors.textSecondary,
                                           fontSize: 11,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -539,33 +536,31 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 7,
-                                        childAspectRatio: 1,
-                                        mainAxisSpacing: 4,
-                                        crossAxisSpacing: 4,
-                                      ),
+                                    crossAxisCount: 7,
+                                    childAspectRatio: 1,
+                                    mainAxisSpacing: 4,
+                                    crossAxisSpacing: 4,
+                                  ),
                                   itemCount: cells.length,
                                   itemBuilder: (context, index) {
                                     final date = cells[index];
                                     if (date == null) return const SizedBox();
 
                                     final disabled = _isDayDisabled(date);
-                                    final isSelected =
-                                        _selectedDate != null &&
+                                    final isSelected = _selectedDate != null &&
                                         _selectedDate!.year == date.year &&
                                         _selectedDate!.month == date.month &&
                                         _selectedDate!.day == date.day;
-                                    final isToday =
-                                        date.year == _today.year &&
+                                    final isToday = date.year == _today.year &&
                                         date.month == _today.month &&
                                         date.day == _today.day;
                                     final weekend = _isWeekend(date);
 
-                                    Color textColor = const Color(0xFF3B1F0A);
+                                    Color textColor = AppColors.textPrimary;
                                     if (isSelected) {
-                                      textColor = const Color(0xFFFBF6EC);
+                                      textColor = AppColors.white;
                                     } else if (weekend) {
-                                      textColor = const Color(0xFFD4822A);
+                                      textColor = AppColors.textSecondary;
                                     }
 
                                     return GestureDetector(
@@ -575,7 +570,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: isSelected
-                                              ? const Color(0xFF3B1F0A)
+                                              ? AppColors.primary
                                               : Colors.transparent,
                                           borderRadius: BorderRadius.circular(
                                             10,
@@ -604,11 +599,9 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                                   height: 6,
                                                   decoration:
                                                       const BoxDecoration(
-                                                        color: Color(
-                                                          0xFFD4822A,
-                                                        ),
-                                                        shape: BoxShape.circle,
-                                                      ),
+                                                    color: AppColors.secondary,
+                                                    shape: BoxShape.circle,
+                                                  ),
                                                 ),
                                               ),
                                           ],
@@ -627,19 +620,19 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 child: Row(
                                   children: [
                                     _buildLegendItem(
-                                      const Color(0xFF3B1F0A),
+                                      AppColors.primary,
                                       'Selected',
                                     ),
                                     const SizedBox(width: 16),
                                     _buildLegendItem(
-                                      const Color(0xFFD4822A),
+                                      AppColors.secondary,
                                       'Today',
                                     ),
                                     const SizedBox(width: 16),
                                     const Text(
-                                      'Red',
+                                      'Muted',
                                       style: TextStyle(
-                                        color: Color(0xFFD4822A),
+                                        color: AppColors.textSecondary,
                                         fontSize: 10,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -648,7 +641,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     const Text(
                                       '= Weekends',
                                       style: TextStyle(
-                                        color: Color(0xFFA0622A),
+                                        color: AppColors.textSecondary,
                                         fontSize: 10,
                                       ),
                                     ),
@@ -668,16 +661,17 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                   const TextSpan(
                                     text: 'Selected: ',
                                     style: TextStyle(
-                                      color: Color(0xFFD4822A),
+                                      color: AppColors.primary,
                                       fontSize: 12,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   TextSpan(
                                     text: _formatDate(_selectedDate!),
                                     style: const TextStyle(
-                                      color: Color(0xFF3B1F0A),
+                                      color: AppColors.textPrimary,
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
@@ -692,14 +686,14 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                             children: [
                               Icon(
                                 Icons.schedule,
-                                color: Color(0xFF3B1F0A),
+                                color: AppColors.primary,
                                 size: 16,
                               ),
                               SizedBox(width: 8),
                               Text(
                                 'Available Time Slots',
                                 style: TextStyle(
-                                  color: Color(0xFF3B1F0A),
+                                  color: AppColors.textPrimary,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -722,11 +716,11 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                               physics: const NeverScrollableScrollPhysics(),
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    childAspectRatio: 2.5,
-                                    mainAxisSpacing: 8,
-                                    crossAxisSpacing: 8,
-                                  ),
+                                crossAxisCount: 3,
+                                childAspectRatio: 2.5,
+                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 8,
+                              ),
                               itemCount: _getTimeSlots(_selectedDate!).length,
                               itemBuilder: (context, index) {
                                 final slot = _getTimeSlots(
@@ -737,21 +731,22 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 return GestureDetector(
                                   onTap: slot.available
                                       ? () => setState(
-                                          () => _selectedTime = slot.time,
-                                        )
+                                            () => _selectedTime = slot.time,
+                                          )
                                       : null,
                                   child: Container(
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
                                       color: isSelected
-                                          ? const Color(0xFFD4822A)
+                                          ? AppColors.primary
                                           : slot.available
-                                          ? const Color(0xFFFBF6EC)
-                                          : const Color(0xFFEFE2CC),
+                                              ? AppColors.white
+                                              : AppColors.paleGreen
+                                                  .withValues(alpha: 0.3),
                                       border: Border.all(
                                         color: isSelected
-                                            ? const Color(0xFFD4822A)
-                                            : const Color(0xFFEFE2CC),
+                                            ? AppColors.primary
+                                            : AppColors.paleGreen,
                                       ),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -759,12 +754,11 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                       _formatTimeLabel(slot.time),
                                       style: TextStyle(
                                         color: isSelected
-                                            ? const Color(0xFFFFFDF8)
+                                            ? AppColors.white
                                             : slot.available
-                                            ? const Color(0xFF6B3A1F)
-                                            : const Color(
-                                                0xFFA0622A,
-                                              ).withValues(alpha: 0.5),
+                                                ? AppColors.textPrimary
+                                                : AppColors.textSecondary
+                                                    .withValues(alpha: 0.5),
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -783,14 +777,15 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                               TextSpan(
                                 text: 'Notes for doctor ',
                                 style: TextStyle(
-                                  color: Color(0xFFA0622A),
+                                  color: AppColors.textSecondary,
                                   fontSize: 13,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               TextSpan(
                                 text: '(optional)',
                                 style: TextStyle(
-                                  color: Color(0x80A0622A),
+                                  color: AppColors.textSecondary,
                                   fontSize: 13,
                                 ),
                               ),
@@ -802,28 +797,30 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                           controller: _notesController,
                           maxLines: 4,
                           style: const TextStyle(
-                            color: Color(0xFF3B1F0A),
+                            color: AppColors.textPrimary,
                             fontSize: 14,
                           ),
                           decoration: InputDecoration(
                             hintText:
                                 'Describe your symptoms or reason for visit...',
                             hintStyle: TextStyle(
-                              color: const Color(0xFFA0622A).withValues(alpha: 0.5),
+                              color: AppColors.textSecondary
+                                  .withValues(alpha: 0.5),
                               fontSize: 14,
                             ),
                             filled: true,
-                            fillColor: const Color(0xFFFBF6EC),
+                            fillColor: AppColors.white,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: const BorderSide(
-                                color: Color(0xFFEFE2CC),
+                                color: AppColors.paleGreen,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: const BorderSide(
-                                color: Color(0xFFD4822A),
+                                color: AppColors.primary,
+                                width: 1.5,
                               ),
                             ),
                           ),
@@ -835,16 +832,10 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  const Color(0xFF3B1F0A).withValues(alpha: 0.05),
-                                  const Color(0xFFD4822A).withValues(alpha: 0.05),
-                                ],
-                              ),
+                              color:
+                                  AppColors.paleGreen.withValues(alpha: 0.25),
                               border: Border.all(
-                                color: const Color(0xFFEFE2CC),
+                                color: AppColors.paleGreen,
                               ),
                               borderRadius: BorderRadius.circular(14),
                             ),
@@ -854,9 +845,9 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 const Text(
                                   'BOOKING SUMMARY',
                                   style: TextStyle(
-                                    color: Color(0xFFA0622A),
+                                    color: AppColors.primary,
                                     fontSize: 12,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -874,7 +865,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 ),
                                 const SizedBox(height: 12),
                                 const Divider(
-                                  color: Color(0xFFEFE2CC),
+                                  color: AppColors.paleGreen,
                                   height: 1,
                                 ),
                                 const SizedBox(height: 12),
@@ -885,16 +876,16 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     const Text(
                                       'Consultation Fee',
                                       style: TextStyle(
-                                        color: Color(0xFF6B3A1F),
+                                        color: AppColors.textSecondary,
                                         fontSize: 13,
                                       ),
                                     ),
                                     Text(
-                                      '\$${widget.fee}',
+                                      '\${widget.fee}',
                                       style: const TextStyle(
-                                        color: Color(0xFFD4822A),
+                                        color: AppColors.primary,
                                         fontSize: 14,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ],
@@ -930,16 +921,15 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: Color(0xFFFFFDF8),
-                border: Border(top: BorderSide(color: Color(0xFFEFE2CC))),
+                color: AppColors.white,
+                border: Border(top: BorderSide(color: AppColors.paleGreen)),
               ),
               child: ElevatedButton(
                 onPressed: canConfirm && !_isBooking ? _handleConfirm : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B1F0A),
-                  disabledBackgroundColor: const Color(
-                    0xFF3B1F0A,
-                  ).withValues(alpha: 0.4),
+                  backgroundColor: AppColors.primary,
+                  disabledBackgroundColor:
+                      AppColors.primary.withValues(alpha: 0.4),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -950,12 +940,12 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                   _isBooking
                       ? 'Booking...'
                       : canConfirm
-                      ? 'Confirm Booking'
-                      : (_selectedDate != null
-                            ? 'Select a Time Slot'
-                            : 'Select a Date First'),
+                          ? 'Confirm Booking'
+                          : (_selectedDate != null
+                              ? 'Select a Time Slot'
+                              : 'Select a Date First'),
                   style: const TextStyle(
-                    color: Color(0xFFFBF6EC),
+                    color: AppColors.white,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -974,7 +964,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
                   decoration: const BoxDecoration(
-                    color: Color(0xFFFFFDF8),
+                    color: AppColors.white,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(24),
                     ),
@@ -986,7 +976,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                         width: 48,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFEFE2CC),
+                          color: AppColors.paleGreen,
                           borderRadius: BorderRadius.circular(2),
                         ),
                         margin: const EdgeInsets.only(bottom: 24),
@@ -995,7 +985,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                         width: 64,
                         height: 64,
                         decoration: const BoxDecoration(
-                          color: Colors.green,
+                          color: AppColors.success,
                           shape: BoxShape.circle,
                         ),
                         alignment: Alignment.center,
@@ -1009,9 +999,9 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                       const Text(
                         'Booking Confirmed!',
                         style: TextStyle(
-                          color: Color(0xFF3B1F0A),
+                          color: AppColors.textPrimary,
                           fontSize: 22,
-                          fontFamily: 'Playfair Display',
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -1019,7 +1009,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                         'Your appointment with ${widget.doctorName} is all set.',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          color: Color(0xFF6B3A1F),
+                          color: AppColors.textSecondary,
                           fontSize: 14,
                         ),
                       ),
@@ -1027,8 +1017,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFBF6EC),
-                          border: Border.all(color: const Color(0xFFEFE2CC)),
+                          color: AppColors.paleGreen.withValues(alpha: 0.25),
+                          border: Border.all(color: AppColors.paleGreen),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Column(
@@ -1039,16 +1029,16 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 const Text(
                                   'Date',
                                   style: TextStyle(
-                                    color: Color(0xFFA0622A),
+                                    color: AppColors.textSecondary,
                                     fontSize: 12,
                                   ),
                                 ),
                                 Text(
                                   _formatDate(_selectedDate!),
                                   style: const TextStyle(
-                                    color: Color(0xFF3B1F0A),
+                                    color: AppColors.textPrimary,
                                     fontSize: 13,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
@@ -1060,16 +1050,16 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 const Text(
                                   'Time',
                                   style: TextStyle(
-                                    color: Color(0xFFA0622A),
+                                    color: AppColors.textSecondary,
                                     fontSize: 12,
                                   ),
                                 ),
                                 Text(
                                   _formatTimeLabel(_selectedTime!),
                                   style: const TextStyle(
-                                    color: Color(0xFF3B1F0A),
+                                    color: AppColors.textPrimary,
                                     fontSize: 13,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
@@ -1087,7 +1077,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                             (route) => false,
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF3B1F0A),
+                            backgroundColor: AppColors.primary,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
@@ -1097,7 +1087,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                           child: const Text(
                             'Done',
                             style: TextStyle(
-                              color: Color(0xFFFBF6EC),
+                              color: AppColors.white,
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
@@ -1120,14 +1110,14 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(color: Color(0xFF6B3A1F), fontSize: 13),
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
         ),
         Text(
           value,
           style: const TextStyle(
-            color: Color(0xFF3B1F0A),
+            color: AppColors.textPrimary,
             fontSize: 13,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],

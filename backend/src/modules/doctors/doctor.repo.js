@@ -122,3 +122,26 @@ export async function getDoctors(filters = {}) {
         }
     });
 }
+
+export async function getDoctorByUserId(userId) {
+    return await prisma.doctor.findFirst({
+        where: { userId },
+        include: {
+            user: {
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    phoneNumber: true,
+                    email: true,
+                    profile: true,
+                },
+            },
+            hospitals: {
+                include: {
+                    hospital: true,
+                },
+            },
+        },
+    });
+}
+

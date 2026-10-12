@@ -91,5 +91,37 @@ export async function getPatients(filters = {}) {
         };
     }
 
-    return await prisma.patient.findMany({ where });
+    if (filters.search || filters.q) {
+        const term = (filters.search || filters.q).trim();
+        where.OR = [
+            { user: { firstName: { contains: term, mode: 'insensitive' } } },
+            { user: { lastName: { contains: term, mode: 'insensitive' } } },
+            { user: { phoneNumber: { contains: term, mode: 'insensitive' } } },
+            { user: { email: { contains: term, mode: 'insensitive' } } },
+        ];
+    }
+
+    return await prisma.patient.findMany({
+        where,
+        include: {
+            user: {
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    phoneNumber: true,
+                    email: true,
+                    createdAt: true,
+                },
+            },
+            _count: {
+                select: {
+                    encounters: true,
+                    invoices: true,
+                },
+            },
+        },
+        orderBy: {
+            createdAt: 'desc',
+        },
+    });
 }

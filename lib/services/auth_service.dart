@@ -37,8 +37,7 @@ class AuthService {
       if (verificationToken != null && verificationToken.isNotEmpty) {
         SessionStore.verificationToken = verificationToken;
         SessionStore.devOtp = _readString(response.decoded, 'devOtp');
-        final backendMessage =
-            _readString(response.decoded, 'message') ??
+        final backendMessage = _readString(response.decoded, 'message') ??
             'OTP sent to your phone.';
         return SignupInitResult.success(
           message: _withDevOtp(backendMessage),
@@ -122,8 +121,7 @@ class AuthService {
         await SessionStore.persistSession();
         SessionStore.verificationToken = null;
         return AuthResult.success(
-          message:
-              _readString(response.decoded, 'message') ??
+          message: _readString(response.decoded, 'message') ??
               'Authentication successful',
         );
       }
@@ -198,16 +196,20 @@ class AuthService {
 
     final effectiveFavs = favoriteDoctorIds ?? SessionStore.favoriteDoctorIds;
 
-    final response = await _put('/api/patients/me/profile', {
-      'age': age,
-      'gender': gender,
-      if (email != null && email.trim().isNotEmpty) 'email': email.trim(),
-      if (emergencyContact != null && emergencyContact.trim().isNotEmpty)
-        'emergencyContact': emergencyContact.trim(),
-      if (bloodGroup != null && bloodGroup.isNotEmpty) 'bloodGroup': bloodGroup,
-      if (chronicConditions != null) 'chronicConditions': chronicConditions,
-      'favoriteDoctorIds': effectiveFavs,
-    }, bearerToken: accessToken);
+    final response = await _put(
+        '/api/patients/me/profile',
+        {
+          'age': age,
+          'gender': gender,
+          if (email != null && email.trim().isNotEmpty) 'email': email.trim(),
+          if (emergencyContact != null && emergencyContact.trim().isNotEmpty)
+            'emergencyContact': emergencyContact.trim(),
+          if (bloodGroup != null && bloodGroup.isNotEmpty)
+            'bloodGroup': bloodGroup,
+          if (chronicConditions != null) 'chronicConditions': chronicConditions,
+          'favoriteDoctorIds': effectiveFavs,
+        },
+        bearerToken: accessToken);
 
     if (response.networkError != null) {
       return AuthResult.failure(response.networkError!);
@@ -221,8 +223,7 @@ class AuthService {
       await _loadCurrentUserProfile(accessToken);
       await SessionStore.persistSession();
       return AuthResult.success(
-        message:
-            _readString(response.decoded, 'message') ??
+        message: _readString(response.decoded, 'message') ??
             'Patient profile saved successfully',
       );
     }
@@ -280,8 +281,7 @@ class AuthService {
       );
     } catch (e) {
       final errorStr = e.toString().toLowerCase();
-      final isNetworkError =
-          errorStr.contains('socketexception') ||
+      final isNetworkError = errorStr.contains('socketexception') ||
           errorStr.contains('failed host lookup') ||
           errorStr.contains('clientexception') ||
           errorStr.contains('connection refused') ||
@@ -327,8 +327,7 @@ class AuthService {
       );
     } catch (e) {
       final errorStr = e.toString().toLowerCase();
-      final isNetworkError =
-          errorStr.contains('socketexception') ||
+      final isNetworkError = errorStr.contains('socketexception') ||
           errorStr.contains('failed host lookup') ||
           errorStr.contains('clientexception') ||
           errorStr.contains('connection refused') ||
@@ -425,7 +424,8 @@ class AuthService {
       if (patientId != null && patientId.trim().isNotEmpty) {
         SessionStore.patientId = patientId.trim();
       }
-      final favs = patient['favoriteDoctorIds'] ?? patient['favouriteDoctorIds'];
+      final favs =
+          patient['favoriteDoctorIds'] ?? patient['favouriteDoctorIds'];
       if (favs is List) {
         SessionStore.favoriteDoctorIds = favs
             .whereType<String>()
@@ -433,6 +433,18 @@ class AuthService {
             .where((item) => item.isNotEmpty)
             .toSet()
             .toList();
+      }
+    }
+
+    final doctor = data['doctor'];
+    if (doctor is Map<String, dynamic>) {
+      final docId = _readString(doctor, 'doctorId');
+      final docSpec = _readString(doctor, 'specialization');
+      if (docId != null && docId.trim().isNotEmpty) {
+        SessionStore.doctorId = docId.trim();
+      }
+      if (docSpec != null && docSpec.trim().isNotEmpty) {
+        SessionStore.doctorSpecialization = docSpec.trim();
       }
     }
   }

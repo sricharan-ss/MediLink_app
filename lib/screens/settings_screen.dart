@@ -33,6 +33,15 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (SessionStore.isDoctor) ...[
+                _MenuCard(
+                  icon: Icons.medical_services_outlined,
+                  label: 'Doctor Dashboard',
+                  onTap: () =>
+                      Navigator.pushNamed(context, '/doctor-dashboard'),
+                ),
+                const SizedBox(height: 10),
+              ],
               _MenuCard(
                 icon: Icons.help_outline,
                 label: 'FAQ',
@@ -50,7 +59,8 @@ class SettingsScreen extends StatelessWidget {
                 label: 'Logout',
                 onTap: () {
                   SessionStore.logout();
-                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', (route) => false);
                 },
               ),
               const SizedBox(height: 24),
@@ -82,7 +92,8 @@ class SettingsScreen extends StatelessWidget {
               const _InfoCard(
                 icon: Icons.location_on_outlined,
                 title: 'Office Address',
-                value: 'MediLink Healthcare Network,\nChennai, Tamil Nadu 600096',
+                value:
+                    'MediLink Healthcare Network,\nChennai, Tamil Nadu 600096',
               ),
             ],
           ),
@@ -137,7 +148,8 @@ class _MenuCard extends StatelessWidget {
                 ),
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.secondary, size: 22),
+            const Icon(Icons.chevron_right,
+                color: AppColors.secondary, size: 22),
           ],
         ),
       ),
@@ -172,7 +184,8 @@ class _SupportPhoneCard extends StatelessWidget {
               color: AppColors.paleGreen,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.phone_outlined, color: AppColors.primary, size: 20),
+            child: const Icon(Icons.phone_outlined,
+                color: AppColors.primary, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(

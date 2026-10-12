@@ -70,14 +70,36 @@ export async function getPayments(filters = {}) {
         };
     }
 
+    if (filters.search || filters.q) {
+        const term = (filters.search || filters.q).trim();
+        where.OR = [
+            { transactionId: { contains: term, mode: 'insensitive' } },
+            { orderId: { contains: term, mode: 'insensitive' } },
+            { receiptNumber: { contains: term, mode: 'insensitive' } },
+            { invoice: { patient: { user: { firstName: { contains: term, mode: 'insensitive' } } } } },
+            { invoice: { patient: { user: { lastName: { contains: term, mode: 'insensitive' } } } } },
+        ];
+    }
+
     return await prisma.payment.findMany({ 
         where,
         include: {
             invoice: {
                 include: {
-                    items: true
-                }
-            }
+                    items: true,
+                    patient: {
+                        include: {
+                            user: {
+                                select: {
+                                    firstName: true,
+                                    lastName: true,
+                                    phoneNumber: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         orderBy: {
             createdAt: 'desc'

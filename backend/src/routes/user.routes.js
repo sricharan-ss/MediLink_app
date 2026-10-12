@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  deleteVaultData,
   getProfilePhoto,
   getUserByIdController,
   getUserByNameController,
@@ -9,7 +10,7 @@ import {
   uploadVault,
 } from '../modules/users/user.controller.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
-``;
+
 const router = express.Router();
 import upload from '../middleware/multerMiddleware.js';
 import {
@@ -20,6 +21,7 @@ import {
 router.get('/userbyid', getUserByIdController);
 router.get('/userbyname', getUserByNameController);
 router.get('/myinfo', authMiddleware, myInfoController);
+router.get('/me', authMiddleware, myInfoController);
 router.post(
   '/uploadProfile',
   authMiddleware,
@@ -35,6 +37,7 @@ router.post(
   uploadVault,
 );
 router.get('/vault', authMiddleware, getVaultData);
+router.delete('/vault/:id', authMiddleware, deleteVaultData);
 router.get('/profile', authMiddleware, getProfilePhoto);
 
 export default router;

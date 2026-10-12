@@ -209,7 +209,7 @@ class _FavoriteDoctorsScreenState extends State<FavoriteDoctorsScreen> {
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [AppColors.brownDeep, AppColors.brownMid],
+              colors: [AppColors.primary, AppColors.secondary],
             ),
           ),
         ),
@@ -394,7 +394,7 @@ class _FavoriteDoctorsScreenState extends State<FavoriteDoctorsScreen> {
                                     child: Text(
                                       doctor.name,
                                       style: const TextStyle(
-                                        color: AppColors.brownDeep,
+                                        color: AppColors.textPrimary,
                                         fontSize: 15,
                                         fontWeight: FontWeight.w700,
                                         fontFamily: 'Playfair Display',
@@ -428,7 +428,8 @@ class _FavoriteDoctorsScreenState extends State<FavoriteDoctorsScreen> {
                                     tooltip: 'Remove from Favorites',
                                     onPressed: isToggling
                                         ? null
-                                        : () => _handleRemoveFavorite(doctor.id),
+                                        : () =>
+                                            _handleRemoveFavorite(doctor.id),
                                   ),
                                 ],
                               ),
@@ -436,7 +437,7 @@ class _FavoriteDoctorsScreenState extends State<FavoriteDoctorsScreen> {
                               Text(
                                 doctor.specialty,
                                 style: const TextStyle(
-                                  color: AppColors.brownMid,
+                                  color: AppColors.textSecondary,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -445,7 +446,7 @@ class _FavoriteDoctorsScreenState extends State<FavoriteDoctorsScreen> {
                               Text(
                                 doctor.hospitalName,
                                 style: const TextStyle(
-                                  color: AppColors.brownLight,
+                                  color: AppColors.secondary,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -461,14 +462,14 @@ class _FavoriteDoctorsScreenState extends State<FavoriteDoctorsScreen> {
                                       children: [
                                         const Icon(
                                           Icons.star,
-                                          color: Color(0xFFD4822A),
+                                          color: AppColors.primary,
                                           size: 13,
                                         ),
                                         const SizedBox(width: 3),
                                         Text(
                                           '${doctor.rating.toStringAsFixed(1)} rating',
                                           style: const TextStyle(
-                                            color: AppColors.brownLight,
+                                            color: AppColors.secondary,
                                             fontSize: 11,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -479,7 +480,7 @@ class _FavoriteDoctorsScreenState extends State<FavoriteDoctorsScreen> {
                                     Text(
                                       '${doctor.experience}y exp',
                                       style: const TextStyle(
-                                        color: AppColors.brownLight,
+                                        color: AppColors.secondary,
                                         fontSize: 11,
                                         fontWeight: FontWeight.w500,
                                       ),

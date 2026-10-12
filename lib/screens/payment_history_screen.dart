@@ -80,8 +80,18 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
   String _formatDate(DateTime? date) {
     if (date == null) return 'Not available';
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     final hour = date.hour;
     final minute = date.minute.toString().padLeft(2, '0');
@@ -130,7 +140,8 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: _statusBackgroundColor(payment.status),
                       borderRadius: BorderRadius.circular(12),
@@ -301,7 +312,7 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [AppColors.brownDeep, AppColors.brownMid],
+              colors: [AppColors.primary, AppColors.secondary],
             ),
           ),
         ),
@@ -331,7 +342,8 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
               Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                style:
+                    const TextStyle(color: AppColors.textPrimary, fontSize: 14),
               ),
               const SizedBox(height: 16),
               ElevatedButton(

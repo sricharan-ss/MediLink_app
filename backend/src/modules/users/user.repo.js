@@ -143,7 +143,12 @@ export const getMyInfo = async ({ userId }) => {
       receptionist: true,
       inventoryManager: true,
       labManager: true,
-      patient: true,
+      hospitalAdmin: {
+        include: {
+          hospital: true,
+        },
+      },
+      superAdmin: true,
       notifications: true,
       vaults: true,
       profile: true,
@@ -241,6 +246,7 @@ export const getVault = async ({ userId }) => {
     select: {
       vaults: {
         select: {
+          id: true,
           fileName: true,
           fileUrl: true,
         },
@@ -249,6 +255,25 @@ export const getVault = async ({ userId }) => {
   });
   return vault;
 };
+
+export const deleteVault = async ({ userId, vaultId }) => {
+  const existing = await prisma.vault.findFirst({
+    where: {
+      id: String(vaultId),
+      userId,
+    },
+  });
+  if (!existing) {
+    return null;
+  }
+  await prisma.vault.delete({
+    where: {
+      id: String(vaultId),
+    },
+  });
+  return existing;
+};
+
 
 export const getUserByEmail = async ({ email }) => {
   const user = await prisma.user.findFirst({

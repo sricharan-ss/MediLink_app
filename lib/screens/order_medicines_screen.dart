@@ -486,7 +486,8 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                     decoration: InputDecoration(
                       hintText: 'Search medicines...',
                       hintStyle: TextStyle(
-                          color: AppColors.textSecondary.withValues(alpha: 0.6)),
+                          color:
+                              AppColors.textSecondary.withValues(alpha: 0.6)),
                       prefixIcon: const Icon(Icons.search,
                           color: AppColors.textSecondary),
                       filled: true,
@@ -494,11 +495,13 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                       contentPadding: const EdgeInsets.symmetric(vertical: 14),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.surfaceSage),
+                        borderSide:
+                            const BorderSide(color: AppColors.surfaceSage),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.surfaceSage),
+                        borderSide:
+                            const BorderSide(color: AppColors.surfaceSage),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -588,7 +591,8 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: AppColors.error.withValues(alpha: 0.1),
+                                    color:
+                                        AppColors.error.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: const Text(
@@ -720,7 +724,8 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                       decoration: InputDecoration(
                         hintText: 'House / street / city / pincode',
                         hintStyle: TextStyle(
-                            color: AppColors.textSecondary.withValues(alpha: 0.6)),
+                            color:
+                                AppColors.textSecondary.withValues(alpha: 0.6)),
                         filled: true,
                         fillColor: AppColors.paleGreen.withValues(alpha: 0.2),
                         contentPadding: const EdgeInsets.all(14),
@@ -768,7 +773,8 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                   padding: const EdgeInsets.all(16),
                   decoration: const BoxDecoration(
                     color: AppColors.white,
-                    border: Border(top: BorderSide(color: AppColors.surfaceSage)),
+                    border:
+                        Border(top: BorderSide(color: AppColors.surfaceSage)),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -803,8 +809,8 @@ class _OrderMedicinesScreenState extends State<OrderMedicinesScreen> {
                           onPressed: canPlaceOrder ? _placeOrder : null,
                           icon: const Icon(Icons.shopping_cart_outlined,
                               size: 20),
-                          label: Text(
-                              _isSubmitting ? 'Placing...' : 'Book Order'),
+                          label:
+                              Text(_isSubmitting ? 'Placing...' : 'Book Order'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: AppColors.white,

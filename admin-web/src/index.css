@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --brand-deep: #2C6975;
+    --brand-soft: #68B2A0;
+    --brand-sage: #CDE0C9;
+    --brand-pale: #E0ECDE;
+    --brand-text: #263238;
+    --brand-muted: #607D80;
+    --brand-error: #D9534F;
+    --brand-success: #3F8F6B;
+  }
+
+  body {
+    background-color: #F8FAF9;
+    color: #263238;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+}

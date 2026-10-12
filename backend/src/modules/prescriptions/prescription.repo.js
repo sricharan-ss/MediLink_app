@@ -74,8 +74,44 @@ export async function getPrescriptionById(prescriptionId) {
     return await prisma.prescription.findUnique({
         where: { prescriptionId: prescriptionId },
         include: {
-            medicines: true,
-            encounter: true
+            medicines: {
+                include: {
+                    medicine: true
+                }
+            },
+            encounter: {
+                include: {
+                    diagnoses: true,
+                    patient: {
+                        include: {
+                            user: {
+                                select: {
+                                    firstName: true,
+                                    lastName: true,
+                                    phoneNumber: true,
+                                    email: true
+                                }
+                            }
+                        }
+                    },
+                    doctor: {
+                        include: {
+                            user: {
+                                select: {
+                                    firstName: true,
+                                    lastName: true
+                                }
+                            }
+                        }
+                    },
+                    hospital: {
+                        select: {
+                            hospitalId: true,
+                            name: true
+                        }
+                    }
+                }
+            }
         }
     })
 }
@@ -84,7 +120,11 @@ export async function getPrescriptionByEncounterId(encounterId) {
     return await prisma.prescription.findFirst({
         where: { encounterId: encounterId },
         include: {
-            medicines: true,
+            medicines: {
+                include: {
+                    medicine: true
+                }
+            },
             encounter: true
         }
     })
@@ -99,7 +139,15 @@ export async function getPrescriptions(filters = {}) {
 
     if (filters.patientId) {
         where.encounter = {
+            ...(where.encounter || {}),
             patientId: filters.patientId
+        };
+    }
+
+    if (filters.doctorId) {
+        where.encounter = {
+            ...(where.encounter || {}),
+            doctorId: filters.doctorId
         };
     }
 
@@ -113,6 +161,7 @@ export async function getPrescriptions(filters = {}) {
             },
             encounter: {
                 include: {
+                    diagnoses: true,
                     doctor: {
                         include: {
                             user: {
@@ -138,17 +187,31 @@ export async function getPrescriptions(filters = {}) {
     });
 }
 
-export async function createPrescriptionWithDiagnosis(prescriptionData, diagnosisData) {
+export async function createPrescriptionWithDiagnosis(prescriptionData, diagnosisData, medicinesData = []) {
     return await prisma.$transaction(async (tx) => {
         // Create prescription
         const prescription = await tx.prescription.create({
             data: {
                 encounterId: prescriptionData.encounterId,
                 nextVisit: prescriptionData.nextVisit,
-                generatedAt: prescriptionData.generatedAt
+                generatedAt: prescriptionData.generatedAt,
+                ...(medicinesData && medicinesData.length > 0 ? {
+                    medicines: {
+                        create: medicinesData.map(m => ({
+                            medicineId: m.medicineId,
+                            dosage: m.dosage,
+                            frequency: m.frequency,
+                            durationDays: m.durationDays
+                        }))
+                    }
+                } : {})
             },
             include: {
-                medicines: true,
+                medicines: {
+                    include: {
+                        medicine: true
+                    }
+                },
                 encounter: true
             }
         });

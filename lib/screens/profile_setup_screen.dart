@@ -13,11 +13,26 @@ class ProfileSetupScreen extends StatefulWidget {
 class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   String? _selectedGender = "Female";
   String? _selectedBloodGroup;
-  final List<String> _bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-  final List<String> _chronicConditions = ['Diabetes Type 2', 'Hypertension', 'Asthma', 'Allergies'];
+  final List<String> _bloodGroups = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-'
+  ];
+  final List<String> _chronicConditions = [
+    'Diabetes Type 2',
+    'Hypertension',
+    'Asthma',
+    'Allergies'
+  ];
   final Set<String> _selectedConditions = {'Hypertension', 'Allergies'};
   final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _customConditionController = TextEditingController();
+  final TextEditingController _customConditionController =
+      TextEditingController();
   bool _isSaving = false;
   String? _errorMessage;
 
@@ -131,7 +146,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     }
 
     final phoneNumber = SessionStore.phoneNumber;
-    final fullName = '${SessionStore.firstName} ${SessionStore.lastName}'.trim();
+    final fullName =
+        '${SessionStore.firstName} ${SessionStore.lastName}'.trim();
     SessionStore.registerUser(phoneNumber, {
       'firstName': SessionStore.firstName,
       'lastName': SessionStore.lastName,
@@ -184,7 +200,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       children: [
                         const _Label('Age'),
                         const SizedBox(height: 8),
-                        _CustomTextField(hint: '32', keyboardType: TextInputType.number, controller: _ageController),
+                        _CustomTextField(
+                            hint: '32',
+                            keyboardType: TextInputType.number,
+                            controller: _ageController),
                       ],
                     ),
                   ),
@@ -198,7 +217,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         _BloodGroupDropdown(
                           value: _selectedBloodGroup,
                           items: _bloodGroups,
-                          onChanged: (val) => setState(() => _selectedBloodGroup = val),
+                          onChanged: (val) =>
+                              setState(() => _selectedBloodGroup = val),
                         ),
                       ],
                     ),
@@ -291,7 +311,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                           height: 22,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.5,
-                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(AppColors.white),
                           ),
                         )
                       : const Text(
@@ -351,7 +372,8 @@ class _CustomTextField extends StatelessWidget {
         hintStyle: const TextStyle(color: AppColors.textSecondary),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.paleGreen, width: 1.2),
@@ -388,14 +410,17 @@ class _BloodGroupDropdown extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
-          hint: const Text('Select', style: TextStyle(color: AppColors.textSecondary)),
+          hint: const Text('Select',
+              style: TextStyle(color: AppColors.textSecondary)),
           isExpanded: true,
-          icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(Icons.keyboard_arrow_down,
+              color: AppColors.textPrimary, size: 20),
           onChanged: onChanged,
           items: items.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
-              child: Text(value, style: const TextStyle(color: AppColors.textPrimary)),
+              child: Text(value,
+                  style: const TextStyle(color: AppColors.textPrimary)),
             );
           }).toList(),
         ),
@@ -427,7 +452,9 @@ class _GenderButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected ? AppColors.primary : Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSelected ? AppColors.primary : AppColors.paleGreen, width: 1.2),
+            border: Border.all(
+                color: isSelected ? AppColors.primary : AppColors.paleGreen,
+                width: 1.2),
           ),
           child: Text(
             label,
@@ -462,9 +489,12 @@ class _ConditionChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.paleGreen.withValues(alpha: 0.5),
+          color: isSelected
+              ? AppColors.primary
+              : AppColors.paleGreen.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: isSelected ? AppColors.primary : AppColors.paleGreen),
+          border: Border.all(
+              color: isSelected ? AppColors.primary : AppColors.paleGreen),
         ),
         child: Text(
           label,

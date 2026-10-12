@@ -54,6 +54,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return '$count $noun';
   }
 
+  String _buildMediLinkId() {
+    final raw = SessionStore.patientId ?? '';
+    if (raw.length >= 6) {
+      return 'ML-${raw.replaceAll('-', '').substring(0, 6).toUpperCase()}';
+    }
+    return raw.isNotEmpty ? 'ML-${raw.toUpperCase()}' : '–';
+  }
+
   void _handleBack() {
     if (widget.onBack != null) {
       widget.onBack!();
@@ -145,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'MediLink ID: ML-892401',
+                      'MediLink ID: ${_buildMediLinkId()}',
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.85),
                         fontSize: 12,

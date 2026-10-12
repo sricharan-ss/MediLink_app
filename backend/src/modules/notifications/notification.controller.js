@@ -14,9 +14,17 @@ export const create = async (req, res, next) => {
 export const update = async (req, res, next) => {
     try {
         const notificationId = req.params.id;
+        const notification = await notificationService.getNotificationById(notificationId);
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+        const isAdmin = req.userRoles && (req.userRoles.includes('SUPER_ADMIN') || req.userRoles.includes('HOSPITAL_ADMIN'));
+        if (!isAdmin && notification.userId !== req.userId) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
         const validatedData = updateNotificationSchema.parse(req.body);
-        const notification = await notificationService.updateNotification(notificationId, validatedData);
-        res.status(200).json(notification);
+        const updatedNotification = await notificationService.updateNotification(notificationId, validatedData);
+        res.status(200).json(updatedNotification);
     } catch (err) {
         next(err);
     }
@@ -49,7 +57,7 @@ export const getById = async (req, res, next) => {
         }
         const isAdmin = req.userRoles && (req.userRoles.includes('SUPER_ADMIN') || req.userRoles.includes('HOSPITAL_ADMIN'));
         if (!isAdmin && notification.userId !== req.userId) {
-            return res.status(404).json({ message: 'Notification not found' });
+            return res.status(403).json({ message: 'Forbidden' });
         }
         res.status(200).json(notification);
     } catch (err) {

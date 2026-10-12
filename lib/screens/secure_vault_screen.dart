@@ -102,7 +102,7 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('File added successfully'),
-            backgroundColor: Color(0xFF3B1F0A),
+            backgroundColor: AppColors.primary,
             duration: Duration(seconds: 2),
           ),
         );
@@ -117,6 +117,47 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
       );
     } finally {
       if (mounted) setState(() => _isUploading = false);
+    }
+  }
+
+  Future<void> _deleteFile(String id, String name) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Document'),
+        content:
+            Text('Are you sure you want to delete "$name" from your vault?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      await PatientApiService.deleteVaultFile(id);
+      await _loadVault();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Document deleted successfully')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(PatientApiService.friendlyError(e)),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -195,7 +236,8 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 child: Text(
                   'Your medical documents stored securely on MediLink',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
               ),
               const SizedBox(height: 16),
@@ -226,7 +268,8 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
                   child: Center(
                     child: Text(
                       'No vault files uploaded yet.',
-                      style: TextStyle(color: Color(0xFF6B3A1F), fontSize: 13),
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 13),
                     ),
                   ),
                 )
@@ -250,40 +293,62 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFBF6EC),
-                          border: Border.all(color: const Color(0xFFEFE2CC)),
+                          color: AppColors.white,
+                          border: Border.all(color: AppColors.paleGreen),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFEFE2CC),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              alignment: Alignment.center,
-                              child: Icon(
-                                type == 'pdf'
-                                    ? Icons.picture_as_pdf_outlined
-                                    : type == 'image'
-                                        ? Icons.image_outlined
-                                        : type == 'video'
-                                            ? Icons.play_circle_outline
-                                            : Icons.insert_drive_file_outlined,
-                                color: const Color(0xFF6B3A1F),
-                                size: 24,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.paleGreen,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    type == 'pdf'
+                                        ? Icons.picture_as_pdf_outlined
+                                        : type == 'image'
+                                            ? Icons.image_outlined
+                                            : type == 'video'
+                                                ? Icons.play_circle_outline
+                                                : Icons
+                                                    .insert_drive_file_outlined,
+                                    color: AppColors.primary,
+                                    size: 22,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    color: AppColors.textSecondary,
+                                    size: 20,
+                                  ),
+                                  onPressed: () =>
+                                      _deleteFile(file['id']!, file['name']!),
+                                  tooltip: 'Delete document',
+                                  constraints: const BoxConstraints(
+                                    minWidth: 32,
+                                    minHeight: 32,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  splashRadius: 18,
+                                ),
+                              ],
                             ),
                             const Spacer(),
                             Text(
                               file['name']!,
                               style: const TextStyle(
-                                color: Color(0xFF3B1F0A),
+                                color: AppColors.textPrimary,
                                 fontSize: 13,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -293,14 +358,14 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
                               children: [
                                 const Icon(
                                   Icons.calendar_today_outlined,
-                                  color: Color(0xFFA0622A),
+                                  color: AppColors.textSecondary,
                                   size: 10,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   _formatDate(file['date']!),
                                   style: const TextStyle(
-                                    color: Color(0xFFA0622A),
+                                    color: AppColors.textSecondary,
                                     fontSize: 10,
                                   ),
                                 ),
@@ -312,7 +377,7 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
                                   ? file['size']!
                                   : file['url']!,
                               style: const TextStyle(
-                                color: Color(0xFFA0622A),
+                                color: AppColors.textSecondary,
                                 fontSize: 10,
                               ),
                               maxLines: 2,
@@ -331,7 +396,7 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
             right: 24,
             child: FloatingActionButton(
               onPressed: _isUploading ? null : _addFile,
-              backgroundColor: const Color(0xFF3B1F0A),
+              backgroundColor: AppColors.primary,
               elevation: 4,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
@@ -342,10 +407,10 @@ class _SecureVaultScreenState extends State<SecureVaultScreen> {
                       height: 22,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Color(0xFFFBF6EC),
+                        color: AppColors.white,
                       ),
                     )
-                  : const Icon(Icons.add, color: Color(0xFFFBF6EC), size: 28),
+                  : const Icon(Icons.add, color: AppColors.white, size: 28),
             ),
           ),
         ],

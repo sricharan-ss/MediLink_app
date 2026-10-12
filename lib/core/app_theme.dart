@@ -120,8 +120,10 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        hintStyle:
+            const TextStyle(color: AppColors.textSecondary, fontSize: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.paleGreen),
@@ -157,7 +159,8 @@ class AppTheme {
         backgroundColor: AppColors.paleGreen,
         selectedColor: AppColors.secondary,
         labelStyle: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
-        secondaryLabelStyle: const TextStyle(color: AppColors.white, fontSize: 13),
+        secondaryLabelStyle:
+            const TextStyle(color: AppColors.white, fontSize: 13),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: const BorderSide(color: Colors.transparent),
@@ -172,6 +175,11 @@ class AppTheme {
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary,
+      ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.paleGreen,
+        space: 1,
+        thickness: 1,
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.primary,
